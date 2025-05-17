@@ -60,7 +60,7 @@ items:
 | --------------- | ------------------------------ |
 | `/briar`        | Opens the shop GUI             |
 | `/briar reload` | Reloads the configuration file |
-
+```
 ---
 
 ## 🧪 Configuration Tips
