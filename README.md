@@ -53,14 +53,14 @@ items:
     cost: 250
     currency: VAULT
     chance: 10
-
+```
 ## ⌨️ Commands
 
 | Command         | Description                    |
 | --------------- | ------------------------------ |
 | `/briar`        | Opens the shop GUI             |
 | `/briar reload` | Reloads the configuration file |
-```
+
 ---
 
 ## 🧪 Configuration Tips
