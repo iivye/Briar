@@ -1,42 +1,45 @@
 #
-# Briar v${version} by iivye
+# ✦ Briar v${version} ✦ A mystical creation by the artisan iivye
 #
 
-# Attention! Support will not be given to those who have not purchased this plugin through SpigotMC/MC-Market.
+# ⚠️ Notice: Support shall not be granted to those who have not acquired this enchanted tome via SpigotMC or MC-Market.
+# Only the worthy—those who bear proof of rightful purchase may summon assistance.
 
-# [-----------------------------------------------------------------------------------------------]
-#
-# Useful Links:
-#   => https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-#   => https://minecraft-heads.com/player-heads
-#   => https://wiki.vg/images/b/bb/DoubleChest-slots.png
-#
-# With text/messages, color codes, hex codes, and PlaceholderAPI (in some instances) is supported.
-#
-# [-----------------------------------------------------------------------------------------------]
+# Part of this configuration file is written in a more immersive "fantasy" theme. If anything written is confusing, please reach out to me and I will explain in more.. normal terms.
 
-# Configuration for the data store used to store players' current shop rotation. Remote databases are supported for cross-server night markets.
-# > Types:
-#   - Remote Databases: (You will need to use one of these for cross-server night markets!)
-#       => MySQL (remote relation-based database, may have connection/lag issues)
+# [━━━━━━━━━━━━━━━✦ LINKS ✦━━━━━━━━━━━━━━━]
 #
-#       => MongoDB (remote document-based database, may have connection/lag issues)
+# 📜 Scrolls of Reference:
+#   → Materials Codex: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#   → Gallery of Heads: https://minecraft-heads.com/player-heads
+#   → Chest Grid Map:   https://wiki.vg/images/b/bb/DoubleChest-slots.png
 #
-#   - Local Databases: (These will only store player night markets on the current server!)
-#       => JSON (human-readable text format, prone to corruption and error)
+# ✦ Color runes (e.g., &a, #00FF00), hex magic, and PlaceholderAPI incantations may be woven into most texts.
 #
-#       => SQLite (flatfile relation-based database that lives in the plugins' folder, fast and stable)
+# [━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━]
+
+# 📚 The Chronicle of Data Binding — used to inscribe each hero’s personal market rotation.
+# For those seeking interrealm synchronization (across multiple servers), choose a remote data crystal.
 #
+# ✦ Available Data Crystals:
+#   - Remote Runes (cross-server magic):
+#       → MySQL: A relational relic, occasionally temperamental due to arcane interference.
+#       → MongoDB: A scroll-based relic of high power, but not without delay.
+#
+#   - Local Runes (single-server enchantment):
+#       → JSON: A readable parchment, though fragile and prone to curses.
+#       → SQLite: A stone tablet stored within the plugin’s lair—quick and sturdy.
+
 datastore:
   type: "SQLite"
-  # Only required if type is set to MySQL!
+  # Only required if type is set to MySQL
   mysql:
     user: "root"
     password: "password"
     host: "localhost"
     port: 3306
     database: "Briar"
-  # Only required if type is set to MongoDB!
+  # Only required if type is set to MongoDB
   mongo:
     uri: "mongodb://username:password@host:port"
     database: "Briar"
@@ -65,23 +68,25 @@ other:
   # Should item purchase limits be global or per-player? (true = global, false = per-player)
   # Note: YOU MUST restart the server after changing this option!
   global_purchase_limits: false
-  # Should debug messages be sent to console?
+  # Should debug messages be sent to the console?
   debug: false
 
-# Configuration for all the items that this plugin chooses from. Items will be randomly selected for players' shops based on their rarity.
-# > Higher the rarity, the more common.
-# > Example item configuration:
-#  ItemId:
-#    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
-#      name: "diamond sword" # The display name of the icon displayed in the shop.
+# ⚒️ Relics of Trade — These are the wares the Briar plugin may summon forth.
+# Each player’s mystical shop shall be filled with items drawn from this enchanted trove,
+# chosen at random by rarity—an irony of fate where *higher rarity means greater commonality*.
+
+# 🧪 Example Relic Blueprint:
+#  RelicId:
+#    icon: # This governs the visage shown in the market, not the treasure itself. The true reward is conjured via command.
+#      name: "Diamondfang Blade" # The market name etched upon this relic’s illusionary form.
 #      lore:
-#        - "hello" # The lore of the icon displayed in the shop.
-#      material: DIAMOND_SWORD # The material of the icon displayed in the shop. This is not the item given to the player.
-#    command: "/give {player} diamond_sword 1" # The command ran once the player successfully buys the item.
+#        - "Forged in dragonfire beneath the Emerald Peaks..." # Ancient whispers that echo beneath the item’s name.
+#      material: DIAMOND_SWORD # The mortal vessel representing this relic—used for visual purposes only.
+#    command: "/give {player} diamond_sword 1" # The rune spoken upon purchase, calling forth the true item into the buyer’s hands.
 #    price:
-#      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
-#      amount: 6.9 # The actual amount of currency the item costs.
-#
+#      currency: "VAULT" # The currency rune—“VAULT” is native, but external enchantments may be needed for other essences.
+#      amount: 6.9 # The toll required to claim this relic, paid in the selected coin of the realm.
+
 items:
   # This ID will be stored with player's current shop rotation so changing these can cause unexpected results. This ID cannot contain the character ',' as it is used in databases as a marker.
   ItemId:
