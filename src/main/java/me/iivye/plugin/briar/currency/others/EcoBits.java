@@ -1,4 +1,4 @@
-package me.iivye.plugin.briar.currency.impl;
+package me.iivye.plugin.briar.currency.others;
 
 import com.willfp.ecobits.currencies.Currencies;
 import com.willfp.ecobits.currencies.CurrencyUtils;
@@ -9,10 +9,10 @@ import org.bukkit.Bukkit;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class EcoBitsCurrency implements Currency {
+public class EcoBits implements Currency {
     private final com.willfp.ecobits.currencies.Currency adapter;
 
-    public EcoBitsCurrency(com.willfp.ecobits.currencies.Currency adapter) {
+    public EcoBits(com.willfp.ecobits.currencies.Currency adapter) {
         this.adapter = adapter;
     }
 
@@ -59,7 +59,7 @@ public class EcoBitsCurrency implements Currency {
             registry.getCurrencies().keySet().removeIf(id -> id.startsWith("ecobits:"));
             boolean anyRegistered = false;
             for (com.willfp.ecobits.currencies.Currency adapter : Currencies.values()) {
-                registry.register(new EcoBitsCurrency(adapter));
+                registry.register(new EcoBits(adapter));
                 anyRegistered = true;
             }
 

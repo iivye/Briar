@@ -10,11 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public abstract class SQLDataStoreProvider implements DataStoreProvider {
+public abstract class SQLDataStorage implements DataStorage {
     protected final SQLConnectionProvider connectionProvider;
     protected final String upsertClause;
 
-    public SQLDataStoreProvider(SQLConnectionProvider connectionProvider, String upsertClause) {
+    public SQLDataStorage(SQLConnectionProvider connectionProvider, String upsertClause) {
         this.connectionProvider = connectionProvider;
         this.upsertClause = upsertClause;
         createTable();

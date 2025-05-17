@@ -8,10 +8,10 @@ import redempt.redlib.commandmanager.CommandHook;
 
 import java.io.IOException;
 
-public class CommandHooks {
+public class CMDHooks {
     private final Briar plugin;
 
-    public CommandHooks(Briar plugin) {
+    public CMDHooks(Briar plugin) {
         this.plugin = plugin;
     }
 

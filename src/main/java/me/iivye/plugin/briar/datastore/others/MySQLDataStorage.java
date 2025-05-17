@@ -1,16 +1,16 @@
-package me.iivye.plugin.briar.datastore.impl;
+package me.iivye.plugin.briar.datastore.others;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.iivye.plugin.briar.Briar;
 import me.iivye.plugin.briar.datastore.SQLConnectionProvider;
-import me.iivye.plugin.briar.datastore.SQLDataStoreProvider;
+import me.iivye.plugin.briar.datastore.SQLDataStorage;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class MySQLDataStoreProvider extends SQLDataStoreProvider {
-    public MySQLDataStoreProvider(Briar plugin) {
+public class MySQLDataStorage extends SQLDataStorage {
+    public MySQLDataStorage(Briar plugin) {
         super(buildConnectionProvider(plugin.getConfig().getString("datastore.mysql.host"), plugin.getConfig().getInt("datastore.mysql.port"), plugin.getConfig().getString("datastore.mysql.user"), plugin.getConfig().getString("datastore.mysql.password"), plugin.getConfig().getString("datastore.mysql.database")), "ON DUPLICATE KEY UPDATE");
     }
 

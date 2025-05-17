@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public interface DataStoreProvider extends Closeable {
+public interface DataStorage extends Closeable {
     Gson GSON = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
 
     void setPlayerShop(PlayerShop shop);

@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class BriarPlaceholders extends PlaceholderExpansion {
+public class BriarPH extends PlaceholderExpansion {
     private final Briar plugin;
 
-    public BriarPlaceholders(Briar plugin) {
+    public BriarPH(Briar plugin) {
         this.plugin = plugin;
     }
 

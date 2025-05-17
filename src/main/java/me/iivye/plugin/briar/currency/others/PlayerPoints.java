@@ -1,18 +1,17 @@
-package me.iivye.plugin.briar.currency.impl;
+package me.iivye.plugin.briar.currency.others;
 
 import me.iivye.plugin.briar.Briar;
 import me.iivye.plugin.briar.currency.Currency;
-import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
-public class PlayerPointsCurrency implements Currency {
+public class PlayerPoints implements Currency {
     private final Briar plugin;
     private PlayerPointsAPI eco;
 
-    public PlayerPointsCurrency(Briar plugin) {
+    public PlayerPoints(Briar plugin) {
         this.plugin = plugin;
     }
 
@@ -23,7 +22,7 @@ public class PlayerPointsCurrency implements Currency {
 
     @Override
     public void load() {
-        this.eco = PlayerPoints.getInstance().getAPI();
+        this.eco = org.black_ixx.playerpoints.PlayerPoints.getInstance().getAPI();
     }
 
     @Override

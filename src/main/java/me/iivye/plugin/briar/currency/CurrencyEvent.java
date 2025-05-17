@@ -4,12 +4,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class CurrencyRegisterEvent extends Event {
+public class CurrencyEvent extends Event {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     private final CurrencyRegistry registry;
 
-    public CurrencyRegisterEvent(CurrencyRegistry registry) {
+    public CurrencyEvent(CurrencyRegistry registry) {
         this.registry = registry;
     }
 

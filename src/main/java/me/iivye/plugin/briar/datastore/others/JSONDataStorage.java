@@ -1,9 +1,9 @@
-package me.iivye.plugin.briar.datastore.impl;
+package me.iivye.plugin.briar.datastore.others;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.iivye.plugin.briar.Briar;
-import me.iivye.plugin.briar.datastore.DataStoreProvider;
+import me.iivye.plugin.briar.datastore.DataStorage;
 import me.iivye.plugin.briar.shop.player.PlayerShop;
 
 import java.io.File;
@@ -12,11 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
-public class JSONDataStoreProvider implements DataStoreProvider {
+public class JSONDataStorage implements DataStorage {
     private final JsonObject data;
     private final File file;
 
-    public JSONDataStoreProvider(Briar plugin) {
+    public JSONDataStorage(Briar plugin) {
         this.file = new File(plugin.getDataFolder(), "data.json");
         if (!this.file.exists()) {
             try {
@@ -28,7 +28,7 @@ public class JSONDataStoreProvider implements DataStoreProvider {
             this.data = new JsonObject();
         } else {
             try {
-                this.data = DataStoreProvider.GSON.fromJson(new String(Files.readAllBytes(this.file.toPath()), StandardCharsets.UTF_8), JsonObject.class);
+                this.data = DataStorage.GSON.fromJson(new String(Files.readAllBytes(this.file.toPath()), StandardCharsets.UTF_8), JsonObject.class);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -40,7 +40,7 @@ public class JSONDataStoreProvider implements DataStoreProvider {
 
     @Override
     public void setPlayerShop(PlayerShop shop) {
-        data.get("shops").getAsJsonObject().add(shop.getUniqueId().toString(), DataStoreProvider.GSON.toJsonTree(shop));
+        data.get("shops").getAsJsonObject().add(shop.getUniqueId().toString(), DataStorage.GSON.toJsonTree(shop));
         save();
     }
 
@@ -51,7 +51,7 @@ public class JSONDataStoreProvider implements DataStoreProvider {
             return Optional.empty();
         }
 
-        return Optional.of(DataStoreProvider.GSON.fromJson(shop, PlayerShop.class));
+        return Optional.of(DataStorage.GSON.fromJson(shop, PlayerShop.class));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class JSONDataStoreProvider implements DataStoreProvider {
         final Set<PlayerShop> set = new HashSet<>();
 
         for (Map.Entry<String, JsonElement> entry : data.get("shops").getAsJsonObject().entrySet()) {
-            set.add(DataStoreProvider.GSON.fromJson(entry.getValue(), PlayerShop.class));
+            set.add(DataStorage.GSON.fromJson(entry.getValue(), PlayerShop.class));
         }
 
         return set;
@@ -72,7 +72,7 @@ public class JSONDataStoreProvider implements DataStoreProvider {
 
     private void save() {
         try {
-            Files.write(file.toPath(), DataStoreProvider.GSON.toJson(data).getBytes(StandardCharsets.UTF_8));
+            Files.write(file.toPath(), DataStorage.GSON.toJson(data).getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

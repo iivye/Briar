@@ -1,4 +1,4 @@
-package me.iivye.plugin.briar.datastore.impl;
+package me.iivye.plugin.briar.datastore.others;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -6,7 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import me.iivye.plugin.briar.Briar;
-import me.iivye.plugin.briar.datastore.DataStoreProvider;
+import me.iivye.plugin.briar.datastore.DataStorage;
 import me.iivye.plugin.briar.shop.player.PlayerShop;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -19,11 +19,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class MongoDataStoreProvider implements DataStoreProvider {
+public class MongoDataStorage implements DataStorage {
     private final MongoClient client;
     private final MongoDatabase db;
 
-    public MongoDataStoreProvider(Briar plugin) {
+    public MongoDataStorage(Briar plugin) {
         this.client = new MongoClient(new MongoClientURI(plugin.getConfig().getString("datastore.mongo.uri")));
         this.db = this.client.getDatabase(plugin.getConfig().getString("datastore.mongo.database"));
     }
@@ -32,7 +32,7 @@ public class MongoDataStoreProvider implements DataStoreProvider {
     public void setPlayerShop(PlayerShop shop) {
         final MongoCollection<Document> col = getCollection();
         final Bson eq = Filters.eq("_id", shop.getUniqueId().toString());
-        final Document doc = Document.parse(DataStoreProvider.GSON.toJson(shop));
+        final Document doc = Document.parse(DataStorage.GSON.toJson(shop));
         if (col.find(eq).cursor().hasNext()) {
             col.replaceOne(eq, doc);
         } else {
@@ -49,14 +49,14 @@ public class MongoDataStoreProvider implements DataStoreProvider {
             return Optional.empty();
         }
 
-        return Optional.of(DataStoreProvider.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class));
+        return Optional.of(DataStorage.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class));
     }
 
     @Override
     public Set<PlayerShop> getAllShops() {
         final Set<PlayerShop> set = new HashSet<>();
 
-        getCollection().find().forEach((Consumer<? super Document>) doc -> set.add(DataStoreProvider.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class)));
+        getCollection().find().forEach((Consumer<? super Document>) doc -> set.add(DataStorage.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class)));
 
         return set;
     }

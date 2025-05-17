@@ -3,7 +3,7 @@ package me.iivye.plugin.briar.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SlotNumberParser {
+public class SlotParser {
     public static List<Integer> parse(List<String> data) {
         final List<Integer> list = new ArrayList<>();
 

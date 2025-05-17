@@ -36,13 +36,13 @@ public class GUIParser {
             extraIconsConfig.getValues(false).forEach((id, data) -> {
                 final ConfigurationSection iconConfig = (ConfigurationSection) data;
                 final ItemStack icon = IconParser.parse(iconConfig);
-                final List<Integer> slots = SlotNumberParser.parse(iconConfig.getStringList("slots"));
+                final List<Integer> slots = SlotParser.parse(iconConfig.getStringList("slots"));
 
                 extraIcons.add(new ExtraIcon(icon, slots));
             });
         }
 
-        return new ParsedGUI(backgroundIcon, SlotNumberParser.parse(backgroundSlots), SlotNumberParser.parse(itemSlots), extraIcons, title, rows);
+        return new ParsedGUI(backgroundIcon, SlotParser.parse(backgroundSlots), SlotParser.parse(itemSlots), extraIcons, title, rows);
     }
 
     public static class ExtraIcon {

@@ -1,18 +1,18 @@
 package me.iivye.plugin.briar;
 
 import me.iivye.plugin.briar.currency.CurrencyRegistry;
-import me.iivye.plugin.briar.datastore.DataStoreProvider;
-import me.iivye.plugin.briar.datastore.impl.JSONDataStoreProvider;
-import me.iivye.plugin.briar.datastore.impl.MongoDataStoreProvider;
-import me.iivye.plugin.briar.datastore.impl.MySQLDataStoreProvider;
-import me.iivye.plugin.briar.datastore.impl.SQLiteDataStoreProvider;
+import me.iivye.plugin.briar.datastore.DataStorage;
+import me.iivye.plugin.briar.datastore.others.JSONDataStorage;
+import me.iivye.plugin.briar.datastore.others.MongoDataStorage;
+import me.iivye.plugin.briar.datastore.others.MySQLDataStorage;
+import me.iivye.plugin.briar.datastore.others.SQLiteDataStorage;
 import me.iivye.plugin.briar.parser.GUIParser;
 import me.iivye.plugin.briar.schedule.access.AccessScheduleManager;
 import me.iivye.plugin.briar.schedule.rotate.RotateScheduleManager;
 import me.iivye.plugin.briar.shop.item.ShopItemRegistry;
 import me.iivye.plugin.briar.shop.player.PlayerShopManager;
 import me.iivye.plugin.briar.util.UpdateChecker;
-import me.iivye.plugin.briar.util.dependency.IsolatedClassLoader;
+import me.iivye.plugin.briar.util.dependency.IsolatedClass;
 import me.iivye.plugin.briar.util.dependency.LibraryLoader;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bstats.bukkit.Metrics;
@@ -34,7 +34,7 @@ public final class Briar extends JavaPlugin {
     private final UpdateChecker updateChecker = new UpdateChecker(this);
 
     private CurrencyRegistry currencyRegistry;
-    private DataStoreProvider dataStoreProvider;
+    private DataStorage dataStorage;
     private PlayerShopManager playerShopManager;
     private RotateScheduleManager rotateScheduleManager;
     private AccessScheduleManager accessScheduleManager;
@@ -76,9 +76,9 @@ public final class Briar extends JavaPlugin {
             getServer().getScheduler().runTaskTimer(this, () -> playerShopManager.updateGlobalPurchaseCount(), 1L, 20L);
         }
 
-        new CommandParser(getResource("commands.rdcml")).parse().register(this, "briar", new CommandHooks(this));
+        new CommandParser(getResource("commands.rdcml")).parse().register(this, "briar", new CMDHooks(this));
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new BriarPlaceholders(this).register();
+            new BriarPH(this).register();
         }
 
         metrics = new Metrics(this, 22301);
@@ -101,7 +101,7 @@ public final class Briar extends JavaPlugin {
             case "mysql":
             case "mariadb": {
                 LibraryLoader.loadWithInject(this, "com.mysql", "mysql-connector-j", "8.4.0");
-                dataStoreProvider = new MySQLDataStoreProvider(this);
+                dataStorage = new MySQLDataStorage(this);
                 getLogger().info("Detected data store type: MySQL-remote");
 
                 break;
@@ -110,7 +110,7 @@ public final class Briar extends JavaPlugin {
             case "mongo":
             case "mongodb": {
                 LibraryLoader.loadWithInject(this, "org.mongodb", "mongo-java-driver", "3.12.14");
-                dataStoreProvider = new MongoDataStoreProvider(this);
+                dataStorage = new MongoDataStorage(this);
                 getLogger().info("Detected data store type: MongoDB-remote");
 
                 break;
@@ -118,7 +118,7 @@ public final class Briar extends JavaPlugin {
 
             case "json":
             case "file": {
-                dataStoreProvider = new JSONDataStoreProvider(this);
+                dataStorage = new JSONDataStorage(this);
                 getLogger().info("Detected data store type: JSON-file");
 
                 break;
@@ -126,17 +126,17 @@ public final class Briar extends JavaPlugin {
 
             case "sqlite":
             case "flatfile": {
-                final IsolatedClassLoader loader = LibraryLoader.load(this, "org.xerial", "sqlite-jdbc", "3.42.0.0"); // Use older version of SQLite for compatibility
-                dataStoreProvider = new SQLiteDataStoreProvider(loader, this);
+                final IsolatedClass loader = LibraryLoader.load(this, "org.xerial", "sqlite-jdbc", "3.42.0.0"); // Use older version of SQLite for compatibility
+                dataStorage = new SQLiteDataStorage(loader, this);
                 getLogger().info("Detected data store type: SQLite-file");
 
                 break;
             }
         }
 
-        if (!dataStoreProvider.test()) {
+        if (!dataStorage.test()) {
             getLogger().info("Failed DataStore testing... Plugin shutting down.");
-            dataStoreProvider = null;
+            dataStorage = null;
             Bukkit.getPluginManager().disablePlugin(this);
 
             return;
@@ -155,7 +155,7 @@ public final class Briar extends JavaPlugin {
         if (rotateScheduleManager != null) {
             getRotateScheduleManager().getScheduler().shutdownNow();
         }
-        if (dataStoreProvider != null) {
+        if (dataStorage != null) {
             try {
                 getDataStoreProvider().close();
             } catch (IOException e) {
@@ -174,8 +174,8 @@ public final class Briar extends JavaPlugin {
         return accessScheduleManager;
     }
 
-    public DataStoreProvider getDataStoreProvider() {
-        return dataStoreProvider;
+    public DataStorage getDataStoreProvider() {
+        return dataStorage;
     }
 
     public CurrencyRegistry getCurrencyRegistry() {

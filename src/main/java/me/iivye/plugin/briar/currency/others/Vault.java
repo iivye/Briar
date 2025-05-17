@@ -1,4 +1,4 @@
-package me.iivye.plugin.briar.currency.impl;
+package me.iivye.plugin.briar.currency.others;
 
 import me.iivye.plugin.briar.Briar;
 import me.iivye.plugin.briar.currency.Currency;
@@ -8,11 +8,11 @@ import org.bukkit.Bukkit;
 import java.util.Objects;
 import java.util.UUID;
 
-public class VaultCurrency implements Currency {
+public class Vault implements Currency {
     private final Briar plugin;
     private Economy eco;
 
-    public VaultCurrency(Briar plugin) {
+    public Vault(Briar plugin) {
         this.plugin = plugin;
     }
 

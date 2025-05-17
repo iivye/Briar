@@ -1,9 +1,9 @@
-package me.iivye.plugin.briar.datastore.impl;
+package me.iivye.plugin.briar.datastore.others;
 
 import me.iivye.plugin.briar.Briar;
 import me.iivye.plugin.briar.datastore.SQLConnectionProvider;
-import me.iivye.plugin.briar.datastore.SQLDataStoreProvider;
-import me.iivye.plugin.briar.util.dependency.IsolatedClassLoader;
+import me.iivye.plugin.briar.datastore.SQLDataStorage;
+import me.iivye.plugin.briar.util.dependency.IsolatedClass;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,12 +12,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class SQLiteDataStoreProvider extends SQLDataStoreProvider {
-    public SQLiteDataStoreProvider(IsolatedClassLoader loader, Briar plugin) {
+public class SQLiteDataStorage extends SQLDataStorage {
+    public SQLiteDataStorage(IsolatedClass loader, Briar plugin) {
         super(new SQLiteConnectionProvider(loader, plugin), "ON CONFLICT (ID) DO UPDATE SET");
     }
 
-    private static Connection buildConnection(IsolatedClassLoader loader, Path path) {
+    private static Connection buildConnection(IsolatedClass loader, Path path) {
         if (loader == null) {
             // We are on a newer version where Spigot loads the library for us.
             try {
@@ -46,11 +46,11 @@ public class SQLiteDataStoreProvider extends SQLDataStoreProvider {
     }
 
     private static final class SQLiteConnectionProvider implements SQLConnectionProvider {
-        private final IsolatedClassLoader loader;
+        private final IsolatedClass loader;
         private final Briar plugin;
         private SQLiteConnection connection = null;
 
-        private SQLiteConnectionProvider(IsolatedClassLoader loader, Briar plugin) {
+        private SQLiteConnectionProvider(IsolatedClass loader, Briar plugin) {
             this.loader = loader;
             this.plugin = plugin;
             get();

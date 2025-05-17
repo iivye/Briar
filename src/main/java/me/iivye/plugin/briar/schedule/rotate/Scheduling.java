@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public class ScheduleTask implements Runnable {
+public class Scheduling implements Runnable {
     private final List<String> schedules;
     private final ScheduleType mode;
     private final Supplier<LocalDateTime> nowSupplier;
     private final RotateScheduleManager scheduleManager;
 
-    public ScheduleTask(List<String> schedules, ScheduleType mode, Supplier<LocalDateTime> nowSupplier, RotateScheduleManager scheduleManager) {
+    public Scheduling(List<String> schedules, ScheduleType mode, Supplier<LocalDateTime> nowSupplier, RotateScheduleManager scheduleManager) {
         this.schedules = schedules;
         this.mode = mode;
         this.nowSupplier = nowSupplier;

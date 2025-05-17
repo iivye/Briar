@@ -8,21 +8,21 @@ import java.net.URLClassLoader;
  * Provides access to {@link URLClassLoader}#addURL.
  */
 // Brought from lucko's helper library. Only works on older Java versions!
-public abstract class URLClassLoaderAccess {
+public abstract class URLClass {
 
     private final URLClassLoader classLoader;
 
-    protected URLClassLoaderAccess(URLClassLoader classLoader) {
+    protected URLClass(URLClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     /**
-     * Creates a {@link URLClassLoaderAccess} for the given class loader.
+     * Creates a {@link URLClass} for the given class loader.
      *
      * @param classLoader the class loader
      * @return the access object
      */
-    static URLClassLoaderAccess create(URLClassLoader classLoader) {
+    static URLClass create(URLClassLoader classLoader) {
         if (Reflection.isSupported()) {
             return new Reflection(classLoader);
         } else {
@@ -40,7 +40,7 @@ public abstract class URLClassLoaderAccess {
     /**
      * Accesses using reflection, not supported on Java 9+.
      */
-    private static class Reflection extends URLClassLoaderAccess {
+    private static class Reflection extends URLClass {
         private static final Method ADD_URL_METHOD;
 
         static {
@@ -72,7 +72,7 @@ public abstract class URLClassLoaderAccess {
         }
     }
 
-    private static class Noop extends URLClassLoaderAccess {
+    private static class Noop extends URLClass {
         private static final Noop INSTANCE = new Noop();
 
         private Noop() {

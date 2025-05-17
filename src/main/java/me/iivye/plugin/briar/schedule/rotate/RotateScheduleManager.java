@@ -86,11 +86,11 @@ public class RotateScheduleManager {
         final ScheduleType mode = ScheduleType.fromName(config.getString("mode"));
         final List<String> schedules = getSchedules(mode, config);
 
-        new ScheduleTask(schedules, mode, () -> LocalDateTime.now(Briar.getInstance().getTimezone()), this).run();
+        new Scheduling(schedules, mode, () -> LocalDateTime.now(Briar.getInstance().getTimezone()), this).run();
         plugin.getLogger().info("Scheduled rotating times...");
     }
 
     public void scheduleTask(List<String> schedules, ScheduleType mode, Supplier<LocalDateTime> now, RotateScheduleManager scheduleManager) {
-        Bukkit.getScheduler().runTaskLater(plugin, new ScheduleTask(schedules, mode, now, scheduleManager), 20L * TimeUnit.DAYS.toSeconds(1));
+        Bukkit.getScheduler().runTaskLater(plugin, new Scheduling(schedules, mode, now, scheduleManager), 20L * TimeUnit.DAYS.toSeconds(1));
     }
 }

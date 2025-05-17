@@ -17,18 +17,18 @@ import java.util.Objects;
 
 // Much of this code was borrowed from lucko's helper library. Adapted by byteful to support isolated class loaders.
 public final class LibraryLoader {
-    private static final Supplier<URLClassLoaderAccess> URL_INJECTOR = Suppliers.memoize(() -> URLClassLoaderAccess.create((URLClassLoader) Briar.class.getClassLoader()));
+    private static final Supplier<URLClass> URL_INJECTOR = Suppliers.memoize(() -> URLClass.create((URLClassLoader) Briar.class.getClassLoader()));
     private static final List<String> USED_NAMES = new ArrayList<>();
 
-    public static IsolatedClassLoader load(Briar plugin, String groupId, String artifactId, String version) {
+    public static IsolatedClass load(Briar plugin, String groupId, String artifactId, String version) {
         return load(plugin, groupId, artifactId, version, "https://repo1.maven.org/maven2");
     }
 
-    public static IsolatedClassLoader load(Briar plugin, String groupId, String artifactId, String version, String repoUrl) {
+    public static IsolatedClass load(Briar plugin, String groupId, String artifactId, String version, String repoUrl) {
         return load(plugin, new Dependency(groupId, artifactId, version, repoUrl));
     }
 
-    public static IsolatedClassLoader load(Briar plugin, Dependency d) {
+    public static IsolatedClass load(Briar plugin, Dependency d) {
         if (RedLib.MID_VERSION >= 17)
             return null; // We don't need to do this ourselves because Spigot has library loading support now!
         final String name = d.getArtifactId() + "-" + d.getVersion();
@@ -37,7 +37,7 @@ public final class LibraryLoader {
         download(plugin, d, saveLocation, name);
 
         try {
-            final IsolatedClassLoader loader = new IsolatedClassLoader(saveLocation.toURI().toURL());
+            final IsolatedClass loader = new IsolatedClass(saveLocation.toURI().toURL());
             plugin.getLogger().info("Loaded dependency '" + name + "' successfully.");
             USED_NAMES.add(saveLocation.getName());
 

@@ -1,9 +1,9 @@
 package me.iivye.plugin.briar.currency;
 
 import me.iivye.plugin.briar.Briar;
-import me.iivye.plugin.briar.currency.impl.EcoBitsCurrency;
-import me.iivye.plugin.briar.currency.impl.PlayerPointsCurrency;
-import me.iivye.plugin.briar.currency.impl.VaultCurrency;
+import me.iivye.plugin.briar.currency.others.EcoBits;
+import me.iivye.plugin.briar.currency.others.PlayerPoints;
+import me.iivye.plugin.briar.currency.others.Vault;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -22,12 +22,12 @@ public class CurrencyRegistry {
     private void load() {
         plugin.getLogger().info("Loading Briar currency adapters...");
         // Let other external plugins know. We delay by a second loading these so other plugins get a chance to handle this and depend on Briar properly.
-        Bukkit.getPluginManager().callEvent(new CurrencyRegisterEvent(this));
+        Bukkit.getPluginManager().callEvent(new CurrencyEvent(this));
 
-        register(new VaultCurrency(plugin));
-        register(new PlayerPointsCurrency(plugin));
+        register(new Vault(plugin));
+        register(new PlayerPoints(plugin));
         // EcoBits has multiple possible currencies within it, so lets register all of them with the format: 'ecobits:<currency>'
-        if (!new EcoBitsCurrency.EcoBitsCurrencyHandler(this).registerAll()) {
+        if (!new EcoBits.EcoBitsCurrencyHandler(this).registerAll()) {
             plugin.getLogger().warning("Skipped loading currency adapter: ecobits");
         }
 
