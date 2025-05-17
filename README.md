@@ -53,3 +53,66 @@ items:
     cost: 250
     currency: VAULT
     chance: 10
+
+## ⌨️ Commands
+
+| Command         | Description                    |
+| --------------- | ------------------------------ |
+| `/briar`        | Opens the shop GUI             |
+| `/briar reload` | Reloads the configuration file |
+
+---
+
+## 🧪 Configuration Tips
+
+* `chance`: Determines the likelihood (%) that an item will appear in a shop rotation.
+* `currency_priority`: Briar uses the first valid, loaded currency plugin from this list.
+* `per_player`: If set to `true`, each player will see a unique shop lineup.
+
+---
+
+## 🐛 Troubleshooting
+
+> **Skipped loading ShopItem...**
+> This means Briar couldn’t find a working currency adapter. Ensure your specified `currency:` (e.g., `VAULT`) is in the loaded priority list and that the plugin is installed and active.
+
+> **No shop items are showing up!**
+> Double-check:
+
+* Your `currency_priority` matches installed plugins
+* Each item uses a valid currency from that list
+* Config file is properly formatted (YAML-sensitive!)
+
+---
+
+## 🔮 Future Plans
+
+* Custom item actions (e.g., commands, potion effects)
+* GUI-based configuration
+* Integration with MMOItems, ItemsAdder, Oraxen
+* Developer API & custom currency adapters
+
+---
+
+## 🌼 Credits
+
+* Plugin by **iivye**
+* Inspired by fantasy, immersive economies, and the charm of nature-based design
+* Thanks to the Minecraft plugin dev community for years of shared knowledge
+
+---
+
+## 🍂 Final Words
+
+Let your players stumble upon the mysterious **Briar**, where no two visits are the same. With its rotating treasures, earthy visuals, and immersive mechanics, **Briar** helps your server economy bloom.
+
+> 🌙 *“When the moon is high, and the fireflies glow\... the Briar opens.”*
+
+---
+
+## 💬 Get in Touch
+
+Questions, ideas, or bugs?
+📧 Contact coming soon
+🗃️ GitHub Issues support planned
+🌱 Discord server in the works!
