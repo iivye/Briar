@@ -9,7 +9,7 @@ softdepend:
   - EssentialsX
   - EcoBits
 author: iivye
-description: A plugin that brings a limited-access, rotating shop to Minecraft. Supports Vault and has an easy-to-use developer API for other plugins.
+description: Briar is a beautifully crafted, rotating shop system for Minecraft servers inspired by the mystique of forest markets and fae bargains.
 permissions:
   briar.admin:
     description: "Permission to use all market admin commands."
