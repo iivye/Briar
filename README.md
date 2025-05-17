@@ -24,7 +24,7 @@
 - At least one supported currency plugin:
   - [Vault](https://www.spigotmc.org/resources/vault.34315/)
   - [PlayerPoints](https://www.spigotmc.org/resources/playerpoints.80745/)
-  - [EcoBits](https://www.spigotmc.org/resources/ecobits.111168/)
+  - [EcoBits](https://www.spigotmc.org/resources/ecobits-%E2%AD%95-create-custom-currencies-%E2%9C%85-improve-your-monetization-%E2%9C%A8-supports-shops-mysql.109967/)
 
 ---
 
