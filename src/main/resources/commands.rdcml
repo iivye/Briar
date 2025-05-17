@@ -1,0 +1,25 @@
+briar,market,nightmarket {
+    hook open
+    help Opens the Briar GUI.
+    user player
+}
+
+briaradmin,adminbriar,briar-admin {
+  reload {
+    hook reload
+    help Reloads the Briar configuration.
+  }
+  forcerotate player:player {
+    hook forcerotate
+    help Forcefully rotate provided player's market shop.
+  }
+  forceglobalrotate {
+    hook forceglobalrotate
+    help Forcefully rotates all shops.
+  }
+  debug {
+    hook debug
+    help Provides debug information to give to support.
+    user console
+  }
+}

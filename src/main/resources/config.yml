@@ -1,0 +1,346 @@
+#
+# Briar v${version} by iivye
+#
+
+# Attention! Support will not be given to those who have not purchased this plugin through SpigotMC/MC-Market.
+
+# [-----------------------------------------------------------------------------------------------]
+#
+# Useful Links:
+#   => https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#   => https://minecraft-heads.com/player-heads
+#   => https://wiki.vg/images/b/bb/DoubleChest-slots.png
+#
+# With text/messages, color codes, hex codes, and PlaceholderAPI (in some instances) is supported.
+#
+# [-----------------------------------------------------------------------------------------------]
+
+# Configuration for the data store used to store players' current shop rotation. Remote databases are supported for cross-server night markets.
+# > Types:
+#   - Remote Databases: (You will need to use one of these for cross-server night markets!)
+#       => MySQL (remote relation-based database, may have connection/lag issues)
+#
+#       => MongoDB (remote document-based database, may have connection/lag issues)
+#
+#   - Local Databases: (These will only store player night markets on the current server!)
+#       => JSON (human-readable text format, prone to corruption and error)
+#
+#       => SQLite (flatfile relation-based database that lives in the plugins' folder, fast and stable)
+#
+datastore:
+  type: "SQLite"
+  # Only required if type is set to MySQL!
+  mysql:
+    user: "root"
+    password: "password"
+    host: "localhost"
+    port: 3306
+    database: "Briar"
+  # Only required if type is set to MongoDB!
+  mongo:
+    uri: "mongodb://username:password@host:port"
+    database: "Briar"
+
+# Configuration for the built-in, default currencies.
+default_currencies:
+  vault:
+    name:
+      singular: "Dollar"
+      plural: "Dollars"
+  playerpoints:
+    name:
+      singular: "Token"
+      plural: "Tokens"
+
+# Configuration for other miscellaneous settings.
+other:
+  # Should the GUI close after buying an item?
+  close_on_buy: true
+  # Should an announcement be sent when shops have rotated?
+  rotate_announcement: true
+  # Should Briar check SpigotMC daily for updates?
+  update: true
+  # Should Briar set currency name placeholders to lowercase?
+  lowercase_currency_names: false
+  # Should item purchase limits be global or per-player? (true = global, false = per-player)
+  # Note: YOU MUST restart the server after changing this option!
+  global_purchase_limits: false
+  # Should debug messages be sent to console?
+  debug: false
+
+# Configuration for all the items that this plugin chooses from. Items will be randomly selected for players' shops based on their rarity.
+# > Higher the rarity, the more common.
+# > Example item configuration:
+#  ItemId:
+#    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+#      name: "diamond sword" # The display name of the icon displayed in the shop.
+#      lore:
+#        - "hello" # The lore of the icon displayed in the shop.
+#      material: DIAMOND_SWORD # The material of the icon displayed in the shop. This is not the item given to the player.
+#    command: "/give {player} diamond_sword 1" # The command ran once the player successfully buys the item.
+#    price:
+#      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+#      amount: 6.9 # The actual amount of currency the item costs.
+#
+items:
+  # This ID will be stored with player's current shop rotation so changing these can cause unexpected results. This ID cannot contain the character ',' as it is used in databases as a marker.
+  ItemId:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&bA cool Diamond Sword" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7Buy me pls :)"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: DIAMOND_SWORD # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: # Can be a list or a single string.
+      - "/give {player} diamond_sword 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId1:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&6Special Dirt" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7i am special"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: DIRT # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} dirt 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId2:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&aApple" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7probably an apple"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: APPLE # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} apple 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId3:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&dMystery Item" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7this is definitely not a golden apple"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: BLUE_DYE # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} golden_apple 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId4:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&8Bucket o' Milk" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7i am a milk bucket"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: MILK_BUCKET # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} milk_bucket 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId5:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&ewooden thing" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7stickkkkkkkkk"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: STICK # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} stick 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId6:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&7a secret minecraft item" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7u can buy me multiple times unlike the other items!"
+        - "&6Price: 6.90"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: DIRT # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} diamond 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 0 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 100.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 6.9 # The actual amount of currency the item costs.
+  ItemId7:
+    icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
+      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
+      name: "&7paper" # The display name of the icon displayed in the shop.
+      lore: # The lore of the icon displayed in the shop.
+        - "&7some premium paper."
+        - "&6Price: 1 million!"
+        - ""
+        - "&7Purchased: {purchase_count}/{stock}"
+      custom_model_data: 1 # The custom model data of the icon. Only works on versions 1.14+
+      amount: 1 # The number of items in the GUI slot.
+      material: PAPER # The material of the icon displayed in the shop. This is not the item given to the player.
+      # player_head: "Steve" # The player name or skull texture to put on a player head. This is not the item given to the player.
+    command: "/give {player} paper 1" # The command ran once the player successfully buys the item. Placeholders: {player} - the player's name
+    purchase_limit: 1 # 0 = infinite purchases, otherwise, players are limited to only purchasing the limited amount
+    rarity: 1.0 # Higher the rarity value, the more common. This will act as a weight when randomly selecting items for shop rotations.
+    price:
+      currency: "VAULT" # Currency depends on hooked currency plugins. Vault is supported by default. Other plugins will require external hooks to work with this option.
+      amount: 1000000.0 # The actual amount of currency the item costs.
+
+# The schedule for the opening and closing of the market. Times and dates depend on timezone configuration at the bottom of this file (or system if not configured).
+access_schedule:
+  mode: "TIMES" # Modes: DATE - specific dates in the year, TIMES - specific times every day
+  # Specific config for the DATE mode.
+  # Preferred date format: (month/day/year hour:minute:second AM/PM) (MM/DD/YYYY HH:MM:SS AM/PM)
+  dates:
+    - start: "12/31/2022 12:00:00 AM"
+      end: "01/01/2023 12:00:00 AM"
+    - start: "02/05/2023 12:00:00 AM"
+      end: "02/10/2023 12:00:00 AM"
+  # Specific config for the TIMES mode. Uses AM and PM or 24 hour time.
+  # Preferred time format: (hour:minute:second AM/PM) (HH:MM:SS AM/PM)
+  times:
+    - start: "12:00:00 AM"
+      end: "11:59:59 PM"
+
+# The schedule for rotating the items in each players' night market. Times and dates depend on timezone configuration at the bottom of this file (or system if not configured).
+rotate_schedule:
+  mode: "TIMES" # Modes: DATE - specific dates in the year, TIMES - specific times every day
+  # Specific config for the DATE mode.
+  # Preferred date format: (month/day/year hour:minute:second) (MM/DD/YYYY HH:MM:SS)
+  dates:
+    - "12/31/2022 12:00:00 AM"
+    - "01/01/2023 12:00:00 AM"
+  # Specific config for the TIMES mode. Uses AM and PM or 24 hour time.
+  # Preferred time format: (hour:minute AM/PM)
+  times:
+    - "12:00:00 AM"
+
+# Settings for the GUI displayed when running /briar
+gui:
+  background_icon:
+    name: " "
+    lore:
+      - ""
+    material: GRAY_STAINED_GLASS_PANE # player_head instead of material also supported here.
+  # Title of the GUI
+  title: "&6Briar"
+  # Number of rows in the GUI
+  rows: 3
+  # The GUI slots that will be populated with the background_icon item.
+  # You may use '-' to indicate to. EX: 1-24 means all slots from 1 to 24.
+  background_slots:
+    - "0-8"
+    - "9"
+    - "17"
+    - "18-26"
+  # The GUI slots that items will be placed in. [!] The number of slots here will determine the number of randomly-picked shop items. [!]
+  # You may use '-' to indicate to. EX: 1-24 means all slots from 1 to 24.
+  item_slots:
+    - "10-16"
+  # Any extra icons that you want to display in the GUI.
+  extra_icons:
+    info:
+      name: "&bInformation"
+      lore:
+        - "&7This shop is unique for all players."
+        - "&7This shop rotates on a certain interval."
+      material: PAPER
+      slots:
+        - "22"
+
+# Timezones supported by Java.
+#
+#  EST - -05:00
+#  HST - -10:00
+#  MST - -07:00
+#  ACT - Australia/Darwin
+#  AET - Australia/Sydney
+#  AGT - America/Argentina/Buenos_Aires
+#  ART - Africa/Cairo
+#  AST - America/Anchorage
+#  BET - America/Sao_Paulo
+#  BST - Asia/Dhaka
+#  CAT - Africa/Harare
+#  CNT - America/St_Johns
+#  CST - America/Chicago
+#  CTT - Asia/Shanghai
+#  EAT - Africa/Addis_Ababa
+#  ECT - Europe/Paris
+#  IET - America/Indiana/Indianapolis
+#  IST - Asia/Kolkata
+#  JST - Asia/Tokyo
+#  MIT - Pacific/Apia
+#  NET - Asia/Yerevan
+#  NST - Pacific/Auckland
+#  PLT - Asia/Karachi
+#  PNT - America/Phoenix
+#  PRT - America/Puerto_Rico
+#  PST - America/Los_Angeles
+#  SST - Pacific/Guadalcanal
+#  VST - Asia/Ho_Chi_Minh
+#
+# Numerical offsets can also be used. (-05:00)
+#
+# If blank, system timezone will be used. Use this only to override system timezone for access/rotate schedules.
+#
+# [!] UPDATING THIS VALUE WHILE THE SERVER IS ON WILL REQUIRE A RESTART FOR IT TO PROPERLY APPLY.
+timezone: ""

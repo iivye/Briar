@@ -1,0 +1,22 @@
+name: Briar
+version: '${version}'
+main: me.iivye.plugin.briar.Briar
+api-version: 1.13
+softdepend:
+  - Vault
+  - PlaceholderAPI
+  - PlayerPoints
+  - EssentialsX
+  - EcoBits
+author: iivye
+description: A plugin that brings a limited-access, rotating shop to Minecraft. Supports Vault and has an easy-to-use developer API for other plugins.
+permissions:
+  briar.admin:
+    description: "Permission to use all market admin commands."
+  briar.use:
+    description: "Permission to use /briar"
+    default: true
+libraries:
+  - org.mongodb:mongo-java-driver:3.12.14
+  - com.mysql:mysql-connector-j:9.1.0
+  - org.xerial:sqlite-jdbc:3.46.0.1
