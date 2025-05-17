@@ -59,7 +59,10 @@ items:
 | Command         | Description                    |
 | --------------- | ------------------------------ |
 | `/briar`        | Opens the shop GUI             |
-| `/briar reload` | Reloads the configuration file |
+| `/briaradmin reload` | Reloads the configuration file |
+| `/briaradmin forcerotate <player>` | Forcefully rotate provided player's market shop. |
+| `briaradmin forcegobalrotate` | Forcefully rotates all shops. |
+| `briaradmin debug` | Provides debug information for support (WIP). |
 
 ---
 
