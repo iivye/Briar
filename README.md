@@ -1,8 +1,8 @@
-# 🌿 Briar | A Living Shop System for Minecraft
+# 🌿 BriarMarket | A Living Shop System for Minecraft
 
 > “In the heart of the forest, where sunlight dapples through ancient leaves, a hidden market awakens at dusk...”
 
-**Briar** is a beautifully crafted, rotating shop system for Minecraft servers inspired by the mystique of forest markets and fae bargains. Designed for immersive experiences and plugin developers alike, Briar lets you create dynamic, configurable shops powered by multiple currencies and stunning customization.
+**BriarMarket** is a beautifully crafted, rotating shop system for Minecraft servers inspired by the mystique of forest markets and fae bargains. Designed for immersive experiences and plugin developers alike, Briar lets you create dynamic, configurable shops powered by multiple currencies and stunning customization.
 
 ---
 
@@ -10,7 +10,7 @@
 
 - 🌀 **Rotating Items** – Like a mystical night market, your shop shifts inventory over time.
 - 💱 **Multi-Currency Support** – Uses Vault, PlayerPoints, and EcoBits.
-- 🍃 **Plant-Themed UI** – Designed with nature and fantasy aesthetics in mind. Rest assured, the UI can be customized to your own imagination.
+- 🍃 **Plant-Themed UI** – Designed with nature and fantasy aesthetics in mind. Rest assured, the UI can be customized to your imagination.
 - 🔧 **Fully Configurable** – YAML-based setup for full control over items, costs, and chances.
 - 📆 **Per-Player Shops** – Give every player a unique shop, or keep it shared across all.
 - 🛠️ **Developer Friendly** – API and custom adapter support (in progress).
@@ -30,10 +30,10 @@
 
 ## 📁 Installation
 
-1. Download `Briar.jar` and place it into your `plugins/` folder.
+1. Download `BriarMarket.jar` and place it into your `plugins/` folder.
 2. Ensure you have at least one supported currency plugin installed and enabled.
 3. Start your server to generate the default config.
-4. Open and edit `plugins/Briar/config.yml` to customize your shop.
+4. Open and edit `plugins/BriarMarket/config.yml` to customize your shop.
 5. Use `/briaradmin reload` to apply changes without restarting.
 
 ---
@@ -100,14 +100,14 @@ items:
 ## 🌼 Credits
 
 * Plugin by **iivye**
-* Inspired by fantasy, immersive economies, and the charm of nature-based design
-* Thanks to the Minecraft plugin dev community for years of shared knowledge
+* Inspired by fantasy, immersive economies, and the charm of nature-based design.
+* Thank you to the Minecraft plugin dev community for years of shared knowledge <3.
 
 ---
 
 ## 🍂 Final Words
 
-Let your players stumble upon the mysterious **Briar**, where no two visits are the same. With its rotating treasures, earthy visuals, and immersive mechanics, **Briar** helps your server economy bloom.
+Let your players stumble upon the mysterious **Briar Market**, where no two visits are the same. With its rotating treasures, earthy visuals, and immersive mechanics, **Briar Market** helps your server economy bloom.
 
 > 🌙 *“When the moon is high, and the fireflies glow\... the Briar opens.”*
 
