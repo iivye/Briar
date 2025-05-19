@@ -1,22 +1,11 @@
 #
-# ✦ Briar v${version} ✦ A mystical creation by the artisan iivye
+# ✦ BriarMarket v${version} ✦ A mystical creation by the artisan iivye
 #
 
 # ⚠️ Notice: Support shall not be granted to those who have not acquired this enchanted tome via SpigotMC or MC-Market.
 # Only the worthy—those who bear proof of rightful purchase may summon assistance.
 
 # Part of this configuration file is written in a more immersive "fantasy" theme. If anything written is confusing, please reach out to me and I will explain in more.. normal terms.
-
-# [━━━━━━━━━━━━━━━✦ LINKS ✦━━━━━━━━━━━━━━━]
-#
-# 📜 Scrolls of Reference:
-#   → Materials Codex: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-#   → Gallery of Heads: https://minecraft-heads.com/player-heads
-#   → Chest Grid Map:   https://wiki.vg/images/b/bb/DoubleChest-slots.png
-#
-# ✦ Color runes (e.g., &a, #00FF00), hex magic, and PlaceholderAPI incantations may be woven into most texts.
-#
-# [━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━]
 
 # 📚 The Chronicle of Data Binding — used to inscribe each hero’s personal market rotation.
 # For those seeking interrealm synchronization (across multiple servers), choose a remote data crystal.
@@ -38,13 +27,12 @@ datastore:
     password: "password"
     host: "localhost"
     port: 3306
-    database: "Briar"
+    database: "BriarMarket"
   # Only required if type is set to MongoDB
   mongo:
     uri: "mongodb://username:password@host:port"
-    database: "Briar"
+    database: "BriarMarket"
 
-# Configuration for the built-in, default currencies.
 default_currencies:
   vault:
     name:
@@ -61,9 +49,9 @@ other:
   close_on_buy: true
   # Should an announcement be sent when shops have rotated?
   rotate_announcement: true
-  # Should Briar check SpigotMC daily for updates?
+  # Should BriarMarket check SpigotMC daily for updates?
   update: true
-  # Should Briar set currency name placeholders to lowercase?
+  # Should BriarMarket set currency name placeholders to lowercase?
   lowercase_currency_names: false
   # Should item purchase limits be global or per-player? (true = global, false = per-player)
   # Note: YOU MUST restart the server after changing this option!
@@ -76,7 +64,7 @@ other:
 # chosen at random by rarity—an irony of fate where *higher rarity means greater commonality*.
 
 # 🧪 Example Relic Blueprint:
-#  RelicId:
+#  ItemId:
 #    icon: # This governs the visage shown in the market, not the treasure itself. The true reward is conjured via command.
 #      name: "Diamondfang Blade" # The market name etched upon this relic’s illusionary form.
 #      lore:
@@ -91,7 +79,7 @@ items:
   # This ID will be stored with player's current shop rotation so changing these can cause unexpected results. This ID cannot contain the character ',' as it is used in databases as a marker.
   ItemId:
     icon: # Configuration for the icon displayed in the shop, not the actual item given to the player. That is done via commands for flexibility.
-      # This supports PlaceholderAPI and proprietary Briar placeholders.
+      # This supports PlaceholderAPI and proprietary BriarMarket placeholders.
       # Placeholders: {stock} - total stock of item, {purchase_count} - amount of item purchased
       name: "&bA cool Diamond Sword" # The display name of the icon displayed in the shop.
       lore: # The lore of the icon displayed in the shop.
@@ -279,35 +267,29 @@ rotate_schedule:
   times:
     - "12:00:00 AM"
 
-# Settings for the GUI displayed when running /briar
+# Settings for the GUI displayed when running /briarmarket
 gui:
   background_icon:
     name: " "
     lore:
       - ""
-    material: GRAY_STAINED_GLASS_PANE # player_head instead of material also supported here.
-  # Title of the GUI
-  title: "&6Briar"
-  # Number of rows in the GUI
+    material: GRAY_STAINED_GLASS_PANE # player_head is also supported here.
+  title: "&6BriarMarket"
   rows: 3
-  # The GUI slots that will be populated with the background_icon item.
-  # You may use '-' to indicate to. EX: 1-24 means all slots from 1 to 24.
   background_slots:
     - "0-8"
     - "9"
     - "17"
     - "18-26"
-  # The GUI slots that items will be placed in. [!] The number of slots here will determine the number of randomly-picked shop items. [!]
-  # You may use '-' to indicate to. EX: 1-24 means all slots from 1 to 24.
+  # The GUI slots that items will be placed in. **The number of slots here will determine the number of randomly picked items in the shop.**
   item_slots:
     - "10-16"
-  # Any extra icons that you want to display in the GUI.
+  # Any extra icons you want to display in the GUI.
   extra_icons:
     info:
       name: "&bInformation"
       lore:
         - "&7This shop is unique for all players."
-        - "&7This shop rotates on a certain interval."
       material: PAPER
       slots:
         - "22"

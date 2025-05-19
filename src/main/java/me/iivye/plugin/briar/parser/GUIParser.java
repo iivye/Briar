@@ -68,7 +68,7 @@ public class GUIParser {
         private final List<Integer> backgroundSlots;
         private final List<Integer> itemSlots;
         private final Set<ExtraIcon> extraIcons;
-        private final String title;
+    private final String title;
         private final int rows;
 
         public ParsedGUI(ItemStack backgroundItem, List<Integer> backgroundSlots, List<Integer> itemSlots, Set<ExtraIcon> extraIcons, String title, int rows) {
@@ -121,7 +121,7 @@ public class GUIParser {
                 final WeightedRandom<ShopItem> random = WeightedRandom.fromCollection(plugin.getShopItemRegistry().getAll(), x -> x, ShopItem::getRarity);
                 items.forEach(x -> random.remove(plugin.getShopItemRegistry().get(x)));
                 if (random.getWeights().size() < diff) {
-                    throw new RuntimeException("There are not enough items to generate shops! You need more items than slots in the GUI!");
+                    throw new RuntimeException("There are not enough items to generate the shops! Please add more items than slots in the GUI!");
                 }
                 for (int i = 0; i < diff; i++) {
                     final ShopItem item = random.roll();

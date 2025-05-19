@@ -46,4 +46,5 @@ public class ShopItemRegistry {
     public int getMaxItems() {
         return plugin.getParsedGUI().getItemSlots().size();
     }
+
 }

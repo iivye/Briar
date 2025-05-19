@@ -1,9 +1,11 @@
 plugins {
     id 'java'
     id 'idea'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
+sourceCompatibility = 21
+targetCompatibility = 21
 group = 'me.iivye.plugin.briar'
 version = '1.1'
 
@@ -19,11 +21,11 @@ repositories {
     }
     maven {
         name = 'jitpack'
-        url = 'https://jitpack.io'
+        url = 'https://jitpack.io/'
     }
     maven {
         name = 'redempt'
-        url = 'https://redempt.dev'
+        url = 'https://redempt.dev/'
     }
     maven {
         name = 'placeholder-api'
@@ -63,34 +65,18 @@ dependencies {
     compileOnly 'org.xerial:sqlite-jdbc:3.46.0.1'
 }
 
-def targetJavaVersion = 8
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = 21
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
-    }
-}
-
 processResources {
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
-    filesMatching('*.yml') {
+    filesMatching('.yml') {
         expand props
     }
 }
 
 shadowJar {
     minimize {
-        exclude(dependency("com.github.cryptomorin:XSeries:.*"))
+        exclude(dependency("com.github.cryptomorin:XSeries:."))
     }
     archiveBaseName.set("Briar")
     archiveClassifier.set("")
@@ -100,3 +86,5 @@ shadowJar {
     relocate 'org.bstats', 'me.iivye.plugin.briar.libs.bstats'
     relocate 'com.zaxxer.hikari', 'me.iivye.plugin.briar.libs.hikaricp'
 }
+
+

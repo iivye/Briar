@@ -97,7 +97,7 @@ public class PlayerShop {
     Briar.getInstance().debug("Creating a new, random shop for: " + uniqueId);
     final int maxItems = registry.getMaxItems();
     if (registry.getAll().size() < maxItems) {
-      throw new RuntimeException("There are not enough items to generate shops! You need more items than slots in the GUI!");
+      throw new RuntimeException("There are not enough items to generate the shops! Please add more items than slots in the GUI!");
     }
 
     final WeightedRandom<ShopItem> random = WeightedRandom.fromCollection(registry.getAll(), x -> x, ShopItem::getRarity);

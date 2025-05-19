@@ -1,10 +1,10 @@
-briar,market,nightmarket {
+briarmarket {
     hook open
     help Opens the Briar GUI.
     user player
 }
 
-briaradmin,adminbriar,briar-admin {
+bmadmin {
   reload {
     hook reload
     help Reloads the Briar configuration.
