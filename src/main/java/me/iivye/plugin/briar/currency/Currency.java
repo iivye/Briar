@@ -30,10 +30,19 @@ public interface Currency {
     void withdraw(UUID player, double amount);
 
     /**
+     * Adds the specified amount to the player's balance.
+     *
+     * @param player player's unique ID
+     * @param amount amount to add
+     */
+    void deposit(UUID player, double amount);
+
+    /**
      * @param amount currency amount
      * @return formatted name based on the amount
      */
     String getName(double amount);
 }
+
 
 

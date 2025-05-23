@@ -183,6 +183,14 @@ items:
       currency: "VAULT"
       amount: 1000000.0
 
+# ✦ Refund Button
+refund_icon:
+  material: PAPER
+  name: "&aRefund Last Item"
+  lore:
+    - "&7Click to refund your last purchased item."
+  slot: 8
+
 # ✦ Market Access Schedule
 access_schedule:
   mode: "TIMES"

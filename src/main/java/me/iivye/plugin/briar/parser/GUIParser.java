@@ -225,6 +225,48 @@ public class GUIParser {
                 }));
             }
 
+            // --- Refund Button Addition ---
+            ConfigurationSection refundConfig = plugin.getConfig().getConfigurationSection("refund_icon");
+            if (refundConfig != null) {
+                ItemStack refundIcon = IconParser.parse(refundConfig);
+                int refundSlot = refundConfig.getInt("slot", 8);
+
+                gui.addButton(refundSlot, ItemButton.create(refundIcon, e -> {
+                    if (!(e.getWhoClicked() instanceof Player)) return;
+
+                    Player p = (Player) e.getWhoClicked();
+
+                    // Check if player has purchased items
+                    if (player.getPurchasedShopItems().isEmpty()) {
+                        p.sendMessage(plugin.getMessage(p, "no_purchased_items_to_refund"));
+                        return;
+                    }
+
+                    // Get last purchased item ID (preserving insertion order)
+                    List<String> purchasedItems = player.getPurchasedShopItems().keySet().stream().toList();
+                    String lastPurchasedId = purchasedItems.get(purchasedItems.size() - 1);
+
+                    ShopItem lastItem = plugin.getShopItemRegistry().get(lastPurchasedId);
+                    if (lastItem == null) {
+                        p.sendMessage(plugin.getMessage(p, "error_refund_item_not_found"));
+                        return;
+                    }
+
+                    // Refund currency to player
+                    lastItem.getCurrency().deposit(player.getUniqueId(), lastItem.getAmount());
+
+
+                    // Remove last purchased item
+                    player.getPurchasedShopItems().remove(lastPurchasedId);
+
+                    // Save asynchronously
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.getDataStoreProvider().setPlayerShop(player));
+
+                    p.sendMessage(plugin.getMessage(p, "successfully_refunded_item").replace("{item}", lastPurchasedId));
+                    p.closeInventory();
+                }));
+            }
+
             return gui;
         }
 
@@ -244,4 +286,5 @@ public class GUIParser {
         return input;
     }
 }
+
 

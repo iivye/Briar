@@ -9,3 +9,6 @@ shop_loading: &cSorry, but the shop is still loading! Please wait and try again 
 no_permission: &cYou do not have permission to use this command!
 item_max_global_purchases: &cThis item is out of stock!
 force_rotated_all: &aForcefully rotated all shops!
+no_purchased_items_to_refund: "&cYou have no purchased items to refund."
+error_refund_item_not_found: "&cError: Refund item not found."
+successfully_refunded_item: "&aYou have successfully refunded &e{item}&a."
