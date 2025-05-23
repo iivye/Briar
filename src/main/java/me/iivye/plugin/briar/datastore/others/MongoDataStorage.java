@@ -23,16 +23,21 @@ public class MongoDataStorage implements DataStorage {
     private final MongoClient client;
     private final MongoDatabase db;
 
+    // Constructor
     public MongoDataStorage(Briar plugin) {
-        this.client = new MongoClient(new MongoClientURI(plugin.getConfig().getString("datastore.mongo.uri")));
-        this.db = this.client.getDatabase(plugin.getConfig().getString("datastore.mongo.database"));
+        String uri = plugin.getConfig().getString("datastore.mongo.uri");
+        String databaseName = plugin.getConfig().getString("datastore.mongo.database");
+        this.client = new MongoClient(new MongoClientURI(uri));
+        this.db = client.getDatabase(databaseName);
     }
 
+    // Data Manipulation
     @Override
     public void setPlayerShop(PlayerShop shop) {
-        final MongoCollection<Document> col = getCollection();
-        final Bson eq = Filters.eq("_id", shop.getUniqueId().toString());
-        final Document doc = Document.parse(DataStorage.GSON.toJson(shop));
+        MongoCollection<Document> col = getCollection();
+        Bson eq = Filters.eq("_id", shop.getUniqueId().toString());
+        Document doc = Document.parse(DataStorage.GSON.toJson(shop));
+
         if (col.find(eq).cursor().hasNext()) {
             col.replaceOne(eq, doc);
         } else {
@@ -42,25 +47,37 @@ public class MongoDataStorage implements DataStorage {
 
     @Override
     public Optional<PlayerShop> getPlayerShop(UUID player) {
-        final MongoCollection<Document> col = getCollection();
-        final Bson eq = Filters.eq("_id", player.toString());
-        final Document doc = col.find(eq).first();
+        MongoCollection<Document> col = getCollection();
+        Bson eq = Filters.eq("_id", player.toString());
+        Document doc = col.find(eq).first();
+
         if (doc == null) {
             return Optional.empty();
         }
 
-        return Optional.of(DataStorage.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class));
+        return Optional.of(
+                DataStorage.GSON.fromJson(
+                        doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()),
+                        PlayerShop.class
+                )
+        );
     }
 
     @Override
     public Set<PlayerShop> getAllShops() {
-        final Set<PlayerShop> set = new HashSet<>();
+        Set<PlayerShop> set = new HashSet<>();
 
-        getCollection().find().forEach((Consumer<? super Document>) doc -> set.add(DataStorage.GSON.fromJson(doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()), PlayerShop.class)));
+        getCollection().find().forEach((Consumer<? super Document>) doc ->
+                set.add(DataStorage.GSON.fromJson(
+                        doc.toJson(JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()),
+                        PlayerShop.class
+                ))
+        );
 
         return set;
     }
 
+    // Testing connection
     @Override
     public boolean test() {
         try {
@@ -72,12 +89,15 @@ public class MongoDataStorage implements DataStorage {
         }
     }
 
+    // Internal helper
     private MongoCollection<Document> getCollection() {
         return db.getCollection("Briar");
     }
 
+    // Cleanup
     @Override
     public void close() {
         client.close();
     }
 }
+

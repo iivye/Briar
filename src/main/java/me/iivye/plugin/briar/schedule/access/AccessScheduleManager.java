@@ -17,16 +17,14 @@ public class AccessScheduleManager {
     private final Set<AccessSchedule> schedules = new HashSet<>();
 
     public AccessScheduleManager(Briar plugin) {
-        final ConfigurationSection config = plugin.getConfig().getConfigurationSection("access_schedule");
-        final ScheduleType mode = ScheduleType.fromName(config.getString("mode"));
+        ConfigurationSection config = plugin.getConfig().getConfigurationSection("access_schedule");
+        ScheduleType mode = ScheduleType.fromName(config.getString("mode"));
         List<Map<?, ?>> scheduleMap;
 
-        if (mode == ScheduleType.DATE) {
-            scheduleMap = config.getMapList("dates");
-        } else if (mode == ScheduleType.TIMES) {
-            scheduleMap = config.getMapList("times");
-        } else {
-            throw new UnsupportedOperationException();
+        switch (mode) {
+            case DATE -> scheduleMap = config.getMapList("dates");
+            case TIMES -> scheduleMap = config.getMapList("times");
+            default -> throw new UnsupportedOperationException("Unsupported schedule mode: " + mode);
         }
 
         for (Map<?, ?> map : scheduleMap) {
@@ -39,14 +37,19 @@ public class AccessScheduleManager {
     }
 
     public LocalDateTime getNextTime() {
-        final LocalDateTime now = LocalDateTime.now(Briar.getInstance().getTimezone());
+        LocalDateTime now = LocalDateTime.now(Briar.getInstance().getTimezone());
 
         if (isShopOpen()) {
             return now;
         }
 
-        System.out.println(schedules.stream().map(AccessSchedule::getStart).collect(Collectors.toList()));
+        List<LocalDateTime> startTimes = schedules.stream()
+                .map(AccessSchedule::getStart)
+                .collect(Collectors.toList());
 
-        return getDateNearest(schedules.stream().map(AccessSchedule::getStart).collect(Collectors.toList()), now);
+        System.out.println(startTimes);
+
+        return getDateNearest(startTimes, now);
     }
 }
+

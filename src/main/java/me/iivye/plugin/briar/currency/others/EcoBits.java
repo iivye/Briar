@@ -12,10 +12,12 @@ import java.util.UUID;
 public class EcoBits implements Currency {
     private final com.willfp.ecobits.currencies.Currency adapter;
 
+    // Constructor
     public EcoBits(com.willfp.ecobits.currencies.Currency adapter) {
         this.adapter = adapter;
     }
 
+    // Currency Interface Implementations
     @Override
     public String getId() {
         return "ecobits:" + adapter.getId();
@@ -23,7 +25,7 @@ public class EcoBits implements Currency {
 
     @Override
     public void load() {
-
+        // No specific loading logic needed
     }
 
     @Override
@@ -46,6 +48,7 @@ public class EcoBits implements Currency {
         return amount + " " + adapter.getName();
     }
 
+    // Inner class for handling registration
     public static class EcoBitsCurrencyHandler {
         private final CurrencyRegistry registry;
 
@@ -54,10 +57,13 @@ public class EcoBits implements Currency {
         }
 
         public boolean registerAll() {
-            if (!Bukkit.getPluginManager().isPluginEnabled("EcoBits")) return false;
+            if (!Bukkit.getPluginManager().isPluginEnabled("EcoBits")) {
+                return false;
+            }
 
             registry.getCurrencies().keySet().removeIf(id -> id.startsWith("ecobits:"));
             boolean anyRegistered = false;
+
             for (com.willfp.ecobits.currencies.Currency adapter : Currencies.values()) {
                 registry.register(new EcoBits(adapter));
                 anyRegistered = true;
@@ -67,3 +73,4 @@ public class EcoBits implements Currency {
         }
     }
 }
+

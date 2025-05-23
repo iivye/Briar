@@ -31,15 +31,13 @@ public class PlayerShop {
     final Map<String, Integer> map = new HashMap<>();
     for (String data : list) {
       if (!data.contains(":")) {
-        map.put(data, 1); // Old data structure, lets not cause any problems and just fix this later during save :)
-
+        // Handle old data structure gracefully
+        map.put(data, 1);
         continue;
       }
-
-      final String[] split = data.split(":");
+      String[] split = data.split(":");
       map.put(split[0], Integer.parseInt(split[1]));
     }
-
     return map;
   }
 
@@ -62,7 +60,6 @@ public class PlayerShop {
   public List<String> getSerializedPurchasedShopItems() {
     final List<String> list = new ArrayList<>();
     purchasedShopItems.forEach((id, amt) -> list.add(id + ":" + amt));
-
     return list;
   }
 
@@ -73,8 +70,8 @@ public class PlayerShop {
   public void purchaseItem(ShopItem item) {
     purchasedShopItems.merge(item.getId(), 1, Integer::sum);
     Briar.getInstance().getPlayerShopManager().getGlobalPurchaseCount().merge(item.getId(), 1, Integer::sum);
-    final OfflinePlayer player = Bukkit.getOfflinePlayer(uniqueId);
 
+    OfflinePlayer player = Bukkit.getOfflinePlayer(uniqueId);
     for (String cmd : item.getCommands()) {
       cmd = cmd.startsWith("/") ? cmd.substring(1) : cmd;
       cmd = cmd.replace("{player}", Objects.requireNonNull(player.getName()));
@@ -95,16 +92,17 @@ public class PlayerShop {
 
   private List<String> generateRandomShop(ShopItemRegistry registry) {
     Briar.getInstance().debug("Creating a new, random shop for: " + uniqueId);
+
     final int maxItems = registry.getMaxItems();
     if (registry.getAll().size() < maxItems) {
-      throw new RuntimeException("There are not enough items to generate the shops! Please add more items than slots in the GUI!");
+      throw new RuntimeException("Not enough items to generate shops! Add more items than slots in the GUI.");
     }
 
     final WeightedRandom<ShopItem> random = WeightedRandom.fromCollection(registry.getAll(), x -> x, ShopItem::getRarity);
 
     final List<String> generated = new ArrayList<>();
     for (int i = 0; i < maxItems; i++) {
-      final ShopItem item = random.roll();
+      ShopItem item = random.roll();
       random.remove(item);
       generated.add(item.getId());
     }
@@ -113,3 +111,4 @@ public class PlayerShop {
     return generated;
   }
 }
+

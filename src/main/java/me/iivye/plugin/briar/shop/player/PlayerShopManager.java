@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerShopManager implements Listener {
-    private final Map<UUID, PlayerShop> loadedShops = new HashMap<>();
+    private final Map<UUID, PlayerShop> loadedShops = new ConcurrentHashMap<>();
     private final Map<String, Integer> globalPurchaseCount = new ConcurrentHashMap<>();
     private final Briar plugin;
 
@@ -24,30 +24,44 @@ public class PlayerShopManager implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+    /**
+     * Rotates all player shops asynchronously, then updates the global purchase counts.
+     */
     public void rotateShops() {
         plugin.debug("Rotating all shops.");
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             for (PlayerShop shop : plugin.getDataStoreProvider().getAllShops()) {
                 shop.rotate(plugin.getShopItemRegistry());
                 plugin.getDataStoreProvider().setPlayerShop(shop);
-                if (Bukkit.getPlayer(shop.getUniqueId()) != null) loadedShops.put(shop.getUniqueId(), shop);
+
+                // Cache loaded shops for online players only
+                if (Bukkit.getPlayer(shop.getUniqueId()) != null) {
+                    loadedShops.put(shop.getUniqueId(), shop);
+                }
             }
             updateGlobalPurchaseCount();
         });
     }
 
+    /**
+     * Updates global purchase counts asynchronously.
+     * Only runs if "other.global_purchase_limits" config is enabled.
+     */
     public void updateGlobalPurchaseCount() {
         if (!plugin.getConfig().getBoolean("other.global_purchase_limits")) return;
 
-//    plugin.debug("Updating global purchase count.");
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             final Map<String, Integer> copy = new HashMap<>();
             final Set<PlayerShop> shops = plugin.getDataStoreProvider().getAllShops();
+
             for (ShopItem item : plugin.getShopItemRegistry().getAll()) {
-                final int totalPurchases = shops.stream().mapToInt(shop -> shop.getPurchaseCount(item.getId())).sum();
+                int totalPurchases = shops.stream()
+                        .mapToInt(shop -> shop.getPurchaseCount(item.getId()))
+                        .sum();
                 copy.put(item.getId(), totalPurchases);
             }
 
+            // Update the concurrent map on the main thread
             Bukkit.getScheduler().runTask(plugin, () -> {
                 globalPurchaseCount.clear();
                 globalPurchaseCount.putAll(copy);
@@ -55,14 +69,18 @@ public class PlayerShopManager implements Listener {
         });
     }
 
+    /**
+     * Retrieves the PlayerShop for the given UUID.
+     * If not loaded, creates and loads a new shop asynchronously.
+     */
     public PlayerShop get(UUID uuid) {
-        if (loadedShops.containsKey(uuid)) return loadedShops.get(uuid);
-
-        final PlayerShop created = new PlayerShop(plugin.getShopItemRegistry(), uuid);
-        loadedShops.put(uuid, created);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.getDataStoreProvider().setPlayerShop(created));
-
-        return created;
+        return loadedShops.computeIfAbsent(uuid, id -> {
+            PlayerShop created = new PlayerShop(plugin.getShopItemRegistry(), id);
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    plugin.getDataStoreProvider().setPlayerShop(created)
+            );
+            return created;
+        });
     }
 
     public int getGlobalPurchaseCount(ShopItem item) {
@@ -79,10 +97,16 @@ public class PlayerShopManager implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> load(uuid));
     }
 
+    /**
+     * Loads a player's shop data into the loadedShops map.
+     */
     public void load(UUID uuid) {
         plugin.debug("Loaded data: " + uuid);
-        loadedShops.put(uuid, plugin.getDataStoreProvider().getPlayerShop(uuid).orElseGet(() -> new PlayerShop(plugin.getShopItemRegistry(), uuid)));
-        plugin.debug("Loaded: " + loadedShops.size());
+        PlayerShop shop = plugin.getDataStoreProvider()
+                .getPlayerShop(uuid)
+                .orElseGet(() -> new PlayerShop(plugin.getShopItemRegistry(), uuid));
+        loadedShops.put(uuid, shop);
+        plugin.debug("Loaded shops count: " + loadedShops.size());
     }
 
     @EventHandler
@@ -97,3 +121,4 @@ public class PlayerShopManager implements Listener {
         });
     }
 }
+

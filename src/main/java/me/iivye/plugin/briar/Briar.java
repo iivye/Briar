@@ -82,7 +82,7 @@ public final class Briar extends JavaPlugin {
         }
 
         metrics = new Metrics(this, 22301);
-        getLogger().info("Successfully started" + getDescription().getFullName() + "!");
+        getLogger().info("Successfully started " + getDescription().getFullName() + "!");
     }
 
     void reloadUpdateChecker() {
@@ -92,53 +92,49 @@ public final class Briar extends JavaPlugin {
         }
 
         if (getConfig().getBoolean("other.update")) {
-            updateCheckingTask = Bukkit.getScheduler().runTaskTimer(this, updateChecker::check, 0L, 20L * TimeUnit.DAYS.toSeconds(1));
+            updateCheckingTask = Bukkit.getScheduler().runTaskTimer(
+                    this,
+                    updateChecker::check,
+                    0L,
+                    20L * TimeUnit.DAYS.toSeconds(1)
+            );
         }
     }
 
     void loadDataStore() {
         switch (getConfig().getString("datastore.type").toLowerCase().trim().replace(" ", "_")) {
             case "mysql":
-            case "mariadb": {
+            case "mariadb":
                 LibraryLoader.loadWithInject(this, "com.mysql", "mysql-connector-j", "8.4.0");
                 dataStorage = new MySQLDataStorage(this);
                 getLogger().info("Detected data store type: MySQL-remote");
-
                 break;
-            }
 
             case "mongo":
-            case "mongodb": {
+            case "mongodb":
                 LibraryLoader.loadWithInject(this, "org.mongodb", "mongo-java-driver", "3.12.14");
                 dataStorage = new MongoDataStorage(this);
                 getLogger().info("Detected data store type: MongoDB-remote");
-
                 break;
-            }
 
             case "json":
-            case "file": {
+            case "file":
                 dataStorage = new JSONDataStorage(this);
                 getLogger().info("Detected data store type: JSON-file");
-
                 break;
-            }
 
             case "sqlite":
-            case "flatfile": {
-                final IsolatedClass loader = LibraryLoader.load(this, "org.xerial", "sqlite-jdbc", "3.42.0.0"); // Use older version of SQLite for compatibility
+            case "flatfile":
+                final IsolatedClass loader = LibraryLoader.load(this, "org.xerial", "sqlite-jdbc", "3.42.0.0");
                 dataStorage = new SQLiteDataStorage(loader, this);
                 getLogger().info("Detected data store type: SQLite-file");
-
                 break;
-            }
         }
 
         if (!dataStorage.test()) {
             getLogger().info("Failed DataStore testing... Plugin shutting down.");
             dataStorage = null;
             Bukkit.getPluginManager().disablePlugin(this);
-
             return;
         }
 
@@ -195,7 +191,10 @@ public final class Briar extends JavaPlugin {
     }
 
     public String getMessage(Player context, String key) {
-        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && context != null ? PlaceholderAPI.setPlaceholders(context, messages.get(key)) : messages.get(key);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && context != null) {
+            return PlaceholderAPI.setPlaceholders(context, messages.get(key));
+        }
+        return messages.get(key);
     }
 
     void reloadMessages() {
@@ -208,12 +207,7 @@ public final class Briar extends JavaPlugin {
 
     void reloadRotateSchedules() {
         final String read = getConfig().getString("timezone");
-        if (read == null || read.isEmpty()) {
-            timezone = ZoneOffset.systemDefault();
-        } else {
-            timezone = ZoneOffset.of(read, ZoneOffset.SHORT_IDS);
-        }
-
+        timezone = (read == null || read.isEmpty()) ? ZoneOffset.systemDefault() : ZoneOffset.of(read, ZoneOffset.SHORT_IDS);
         rotateScheduleManager = new RotateScheduleManager(this);
     }
 
@@ -234,7 +228,6 @@ public final class Briar extends JavaPlugin {
     }
 
     public void debug(String message) {
-        //if (getDescription().getVersion().contains("BETA")) {
         if (getConfig().getBoolean("other.debug", false)) {
             getLogger().info("[DEBUG] " + message);
         }
@@ -244,3 +237,4 @@ public final class Briar extends JavaPlugin {
         return timezone;
     }
 }
+

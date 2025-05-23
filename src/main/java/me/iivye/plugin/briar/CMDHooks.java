@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import redempt.redlib.commandmanager.CommandHook;
-
 import java.io.IOException;
 
 public class CMDHooks {
@@ -19,18 +18,16 @@ public class CMDHooks {
     public void onOpen(Player sender) {
         if (!sender.hasPermission("briar.use")) {
             sender.sendMessage(plugin.getMessage(sender, "no_permission"));
-
             return;
         }
 
         if (!plugin.getAccessScheduleManager().isShopOpen()) {
             sender.sendMessage(plugin.getMessage(sender, "shop_not_open"));
-
             return;
         }
+
         if (!plugin.getCurrencyRegistry().isLoaded()) {
             sender.sendMessage(plugin.getMessage(sender, "shop_loading"));
-
             return;
         }
 
@@ -42,17 +39,18 @@ public class CMDHooks {
     public void onReload(CommandSender sender) {
         if (!sender.hasPermission("briar.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
-
             return;
         }
 
         plugin.getParsedGUI().close();
         plugin.getRotateScheduleManager().getScheduler().shutdownNow();
+
         try {
             plugin.getDataStoreProvider().close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         plugin.reloadConfig();
         plugin.reloadMessages();
         plugin.reloadCurrencyManager();
@@ -62,7 +60,7 @@ public class CMDHooks {
         plugin.reloadShopItems();
         plugin.loadDataStore();
         plugin.reloadUpdateChecker();
-//    plugin.getPlayerShopManager().updateGlobalPurchaseCount();
+
         sender.sendMessage(plugin.getMessage(null, "reload_success"));
     }
 
@@ -70,7 +68,6 @@ public class CMDHooks {
     public void onForceRotate(CommandSender sender, Player player) {
         if (!sender.hasPermission("briar.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
-
             return;
         }
 
@@ -82,7 +79,6 @@ public class CMDHooks {
     public void onForceGlobalRotate(CommandSender sender) {
         if (!sender.hasPermission("briar.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
-
             return;
         }
 
@@ -94,11 +90,11 @@ public class CMDHooks {
     public void onDebug(CommandSender sender) {
         if (!sender.hasPermission("briar.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
-
             return;
         }
 
         plugin.getUpdateChecker().check();
+
         sender.sendMessage("Briar's Debug Information:");
         sender.sendMessage("- Server Version: " + Bukkit.getVersion());
         sender.sendMessage("- Server Type: " + Bukkit.getBukkitVersion());

@@ -23,7 +23,7 @@ public class BriarPH extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "byteful";
+        return "iivye";
     }
 
     @Override

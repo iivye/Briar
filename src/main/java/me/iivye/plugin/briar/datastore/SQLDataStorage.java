@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public abstract class SQLDataStorage implements DataStorage {
+
     protected final SQLConnectionProvider connectionProvider;
     protected final String upsertClause;
 
@@ -22,12 +23,15 @@ public abstract class SQLDataStorage implements DataStorage {
 
     @Override
     public void setPlayerShop(PlayerShop shop) {
-        final String sql = "INSERT INTO Briar (ID, Purchased, Items) VALUES (?, ?, ?) " + upsertClause + " Purchased=?, Items=?;";
+        final String sql = "INSERT INTO Briar (ID, Purchased, Items) VALUES (?, ?, ?) "
+                + upsertClause + " Purchased=?, Items=?;";
 
-        try (final Connection connection = connectionProvider.get(); final PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = connectionProvider.get();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             final List<String> purchased = shop.getSerializedPurchasedShopItems();
             final List<String> items = shop.getShopItems();
+
             final String purchasedSerialized = SQLUtils.serializeList(purchased);
             final String itemsSerialized = SQLUtils.serializeList(items);
 
@@ -47,18 +51,22 @@ public abstract class SQLDataStorage implements DataStorage {
     public Optional<PlayerShop> getPlayerShop(UUID player) {
         final String sql = "SELECT * FROM Briar WHERE ID=?;";
 
-        try (final Connection connection = connectionProvider.get(); final PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = connectionProvider.get();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setBytes(1, SQLUtils.serializeUUID(player));
 
-            try (ResultSet set = statement.executeQuery()) {
-                if (!set.next()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
                     return Optional.empty();
                 }
-                final List<String> purchased = SQLUtils.deserializeList(set.getString("Purchased"));
-                final List<String> items = SQLUtils.deserializeList(set.getString("Items"));
+
+                final List<String> purchased = SQLUtils.deserializeList(resultSet.getString("Purchased"));
+                final List<String> items = SQLUtils.deserializeList(resultSet.getString("Items"));
 
                 return Optional.of(new PlayerShop(player, purchased, items));
             }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -68,22 +76,26 @@ public abstract class SQLDataStorage implements DataStorage {
 
     @Override
     public Set<PlayerShop> getAllShops() {
-        final Set<PlayerShop> set = new HashSet<>();
+        final Set<PlayerShop> shops = new HashSet<>();
         final String sql = "SELECT * FROM Briar;";
 
-        try (final Connection connection = connectionProvider.get(); final PreparedStatement statement = connection.prepareStatement(sql); final ResultSet result = statement.executeQuery()) {
-            while (result.next()) {
-                final UUID uuid = SQLUtils.deserializeUUID(result.getBytes("ID"));
-                final List<String> purchased = SQLUtils.deserializeList(result.getString("Purchased"));
-                final List<String> items = SQLUtils.deserializeList(result.getString("Items"));
+        try (Connection connection = connectionProvider.get();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
-                set.add(new PlayerShop(uuid, purchased, items));
+            while (resultSet.next()) {
+                final UUID uuid = SQLUtils.deserializeUUID(resultSet.getBytes("ID"));
+                final List<String> purchased = SQLUtils.deserializeList(resultSet.getString("Purchased"));
+                final List<String> items = SQLUtils.deserializeList(resultSet.getString("Items"));
+
+                shops.add(new PlayerShop(uuid, purchased, items));
             }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return set;
+        return shops;
     }
 
     @Override
@@ -92,10 +104,17 @@ public abstract class SQLDataStorage implements DataStorage {
     }
 
     private void createTable() {
-        final String sql = "CREATE TABLE IF NOT EXISTS Briar (ID BINARY(16) NOT NULL, Purchased TEXT NOT NULL, Items TEXT NOT NULL, PRIMARY KEY (ID));";
+        final String sql = "CREATE TABLE IF NOT EXISTS Briar (" +
+                "ID BINARY(16) NOT NULL, " +
+                "Purchased TEXT NOT NULL, " +
+                "Items TEXT NOT NULL, " +
+                "PRIMARY KEY (ID));";
 
-        try (final Connection connection = connectionProvider.get(); final PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = connectionProvider.get();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.execute();
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

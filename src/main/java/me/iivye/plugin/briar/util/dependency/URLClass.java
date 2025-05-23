@@ -7,7 +7,6 @@ import java.net.URLClassLoader;
 /**
  * Provides access to {@link URLClassLoader}#addURL.
  */
-// Brought from lucko's helper library. Only works on older Java versions!
 public abstract class URLClass {
 
     private final URLClassLoader classLoader;
@@ -81,7 +80,7 @@ public abstract class URLClass {
 
         @Override
         public void addURL(URL url) {
-            throw new UnsupportedOperationException("Briar is unable to inject classes properly into your Java runtime! Please contact byteful on discord about this!");
+            throw new UnsupportedOperationException();
         }
     }
 

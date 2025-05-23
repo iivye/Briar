@@ -14,11 +14,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Collections;
 
-// Much of this code was borrowed from lucko's helper library. Adapted by byteful to support isolated class loaders.
+
 public final class LibraryLoader {
-    private static final Supplier<URLClass> URL_INJECTOR = Suppliers.memoize(() -> URLClass.create((URLClassLoader) Briar.class.getClassLoader()));
-    private static final List<String> USED_NAMES = new ArrayList<>();
+    private static final Supplier<URLClass> URL_INJECTOR = Suppliers.memoize(() ->
+            URLClass.create((URLClassLoader) Briar.class.getClassLoader())
+    );
+    private static final List<String> USED_NAMES = Collections.synchronizedList(new ArrayList<>());
 
     public static IsolatedClass load(Briar plugin, String groupId, String artifactId, String version) {
         return load(plugin, groupId, artifactId, version, "https://repo1.maven.org/maven2");
@@ -28,19 +31,21 @@ public final class LibraryLoader {
         return load(plugin, new Dependency(groupId, artifactId, version, repoUrl));
     }
 
-    public static IsolatedClass load(Briar plugin, Dependency d) {
-        if (RedLib.MID_VERSION >= 17)
-            return null; // We don't need to do this ourselves because Spigot has library loading support now!
-        final String name = d.getArtifactId() + "-" + d.getVersion();
+    public static IsolatedClass load(Briar plugin, Dependency dependency) {
+        if (RedLib.MID_VERSION >= 17) {
+            // Spigot 1.17+ supports library loading natively
+            return null;
+        }
+
+        final String name = dependency.getArtifactId() + "-" + dependency.getVersion();
         final File saveLocation = new File(getLibFolder(plugin), name + ".jar");
 
-        download(plugin, d, saveLocation, name);
+        download(plugin, dependency, saveLocation, name);
 
         try {
-            final IsolatedClass loader = new IsolatedClass(saveLocation.toURI().toURL());
+            IsolatedClass loader = new IsolatedClass(saveLocation.toURI().toURL());
             plugin.getLogger().info("Loaded dependency '" + name + "' successfully.");
             USED_NAMES.add(saveLocation.getName());
-
             return loader;
         } catch (MalformedURLException e) {
             throw new RuntimeException("Unable to load dependency: " + saveLocation, e);
@@ -55,65 +60,77 @@ public final class LibraryLoader {
         loadWithInject(plugin, new Dependency(groupId, artifactId, version, repoUrl));
     }
 
-    public static void loadWithInject(Briar plugin, Dependency d) {
-        if (RedLib.MID_VERSION >= 17)
-            return; // We don't need to do this ourselves because Spigot has library loading support now!
+    public static void loadWithInject(Briar plugin, Dependency dependency) {
+        if (RedLib.MID_VERSION >= 17) {
+            return;
+        }
 
-        final String name = d.getArtifactId() + "-" + d.getVersion();
+        final String name = dependency.getArtifactId() + "-" + dependency.getVersion();
         final File saveLocation = new File(getLibFolder(plugin), name + ".jar");
 
-        download(plugin, d, saveLocation, name);
+        download(plugin, dependency, saveLocation, name);
 
         try {
             URL_INJECTOR.get().addURL(saveLocation.toURI().toURL());
-            plugin.getLogger().info("Loaded dependency '" + name + "' successfully.");
-
+            plugin.getLogger().info("Injected dependency '" + name + "' successfully.");
             USED_NAMES.add(saveLocation.getName());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load dependency: " + saveLocation, e);
+            throw new RuntimeException("Unable to inject dependency: " + saveLocation, e);
         }
     }
 
-    private static void download(Briar plugin, Dependency d, File saveLocation, String name) {
-        plugin.getLogger().info(String.format("Loading dependency '%s:%s:%s'...", d.getGroupId(), d.getArtifactId(), d.getVersion()));
+    private static void download(Briar plugin, Dependency dependency, File saveLocation, String name) {
+        plugin.getLogger().info(String.format("Loading dependency '%s:%s:%s'...", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
 
         if (!saveLocation.exists()) {
             try {
-                plugin.getLogger().info("Dependency '" + name + "' not found in libraries folder. Attempting to download...");
-                final URL url = d.getUrl();
+                plugin.getLogger().info("Dependency '" + name + "' not found locally. Attempting download...");
+                final URL url = dependency.getUrl();
 
-                try (final InputStream is = url.openStream()) {
+                try (InputStream is = url.openStream()) {
                     Files.copy(is, saveLocation.toPath());
                 }
 
+                plugin.getLogger().info("Dependency '" + name + "' successfully downloaded.");
             } catch (Exception e) {
-                e.printStackTrace();
+                plugin.getLogger().severe("Failed to download dependency '" + name + "': " + e.getMessage());
+                throw new RuntimeException("Unable to download dependency: " + dependency, e);
             }
-
-            plugin.getLogger().info("Dependency '" + name + "' successfully downloaded.");
         }
 
         if (!saveLocation.exists()) {
-            throw new RuntimeException("Unable to download dependency: " + d);
+            throw new RuntimeException("Unable to download dependency: " + dependency);
         }
     }
 
     private static File getLibFolder(Briar plugin) {
         final File folder = new File(plugin.getDataFolder(), "libraries");
-        if (!folder.exists()) {
-            folder.mkdirs();
+        if (!folder.exists() && !folder.mkdirs()) {
+            plugin.getLogger().warning("Could not create libraries folder: " + folder);
         }
-
         return folder;
     }
 
+    /**
+     * Deletes all .jar files in the libraries folder that are not in the USED_NAMES list.
+     */
     public static void clearUnusedJars(Briar plugin) {
         final File folder = getLibFolder(plugin);
+        File[] files = folder.listFiles();
 
-        for (File file : Objects.requireNonNull(folder.listFiles())) {
-            if (!file.getName().endsWith(".jar") || USED_NAMES.contains(file.getName())) continue;
+        if (files == null) return;
 
-            file.delete();
+        for (File file : files) {
+            if (!file.getName().endsWith(".jar")) continue;
+
+            if (!USED_NAMES.contains(file.getName())) {
+                boolean deleted = file.delete();
+                if (deleted) {
+                    plugin.getLogger().info("Deleted unused library: " + file.getName());
+                } else {
+                    plugin.getLogger().warning("Failed to delete unused library: " + file.getName());
+                }
+            }
         }
     }
 
@@ -130,55 +147,39 @@ public final class LibraryLoader {
             this.repoUrl = Objects.requireNonNull(repoUrl, "repoUrl");
         }
 
-        public String getGroupId() {
-            return this.groupId;
-        }
-
-        public String getArtifactId() {
-            return this.artifactId;
-        }
-
-        public String getVersion() {
-            return this.version;
-        }
-
-        public String getRepoUrl() {
-            return this.repoUrl;
-        }
+        public String getGroupId() { return groupId; }
+        public String getArtifactId() { return artifactId; }
+        public String getVersion() { return version; }
+        public String getRepoUrl() { return repoUrl; }
 
         public URL getUrl() throws MalformedURLException {
-            String repo = this.repoUrl;
-            if (!repo.endsWith("/")) {
-                repo += "/";
-            }
-            repo += "%s/%s/%s/%s-%s.jar";
-
-            String url = String.format(repo, this.groupId.replace(".", "/"), this.artifactId, this.version, this.artifactId, this.version);
-            return new URL(url);
+            String base = repoUrl.endsWith("/") ? repoUrl : repoUrl + "/";
+            String path = String.format("%s/%s/%s/%s-%s.jar",
+                    groupId.replace('.', '/'), artifactId, version, artifactId, version);
+            return new URL(base + path);
         }
 
         @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
+            if (this == o) return true;
             if (!(o instanceof Dependency)) return false;
-            final Dependency other = (Dependency) o;
-            return this.getGroupId().equals(other.getGroupId()) && this.getArtifactId().equals(other.getArtifactId()) && this.getVersion().equals(other.getVersion()) && this.getRepoUrl().equals(other.getRepoUrl());
+            Dependency other = (Dependency) o;
+            return groupId.equals(other.groupId)
+                    && artifactId.equals(other.artifactId)
+                    && version.equals(other.version)
+                    && repoUrl.equals(other.repoUrl);
         }
 
         @Override
         public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            result = result * PRIME + this.getGroupId().hashCode();
-            result = result * PRIME + this.getArtifactId().hashCode();
-            result = result * PRIME + this.getVersion().hashCode();
-            result = result * PRIME + this.getRepoUrl().hashCode();
-            return result;
+            return Objects.hash(groupId, artifactId, version, repoUrl);
         }
 
         @Override
         public String toString() {
-            return "LibraryLoader.Dependency(" + "groupId=" + this.getGroupId() + ", " + "artifactId=" + this.getArtifactId() + ", " + "version=" + this.getVersion() + ", " + "repoUrl=" + this.getRepoUrl() + ")";
+            return String.format("Dependency(groupId=%s, artifactId=%s, version=%s, repoUrl=%s)",
+                    groupId, artifactId, version, repoUrl);
         }
     }
 }
+

@@ -14,19 +14,24 @@ public class CurrencyRegistry {
     private final Briar plugin;
     private boolean isLoaded = false;
 
+    // Constructor
     public CurrencyRegistry(Briar plugin) {
         this.plugin = plugin;
         Bukkit.getScheduler().runTaskLater(plugin, this::load, 20L);
     }
 
+    // Initialization
     private void load() {
-        plugin.getLogger().info("Loading Briar currency adapters...");
-        // Let other external plugins know. We delay by a second loading these so other plugins get a chance to handle this and depend on Briar properly.
+        plugin.getLogger().info("Loading BriarMarket currency adapters...");
+
+        // Allow external plugins to register their currencies
         Bukkit.getPluginManager().callEvent(new CurrencyEvent(this));
 
+        // Register internal currencies
         register(new Vault(plugin));
         register(new PlayerPoints(plugin));
-        // EcoBits has multiple possible currencies within it, so lets register all of them with the format: 'ecobits:<currency>'
+
+        // Register all EcoBits currencies
         if (!new EcoBits.EcoBitsCurrencyHandler(this).registerAll()) {
             plugin.getLogger().warning("Skipped loading currency adapter: ecobits");
         }
@@ -34,16 +39,13 @@ public class CurrencyRegistry {
         isLoaded = true;
         plugin.getLogger().info("Done loading currencies!");
 
-        plugin.getShopItemRegistry().load(); // Have to load items after currencies are loaded.
+        // Load dependent systems
+        plugin.getShopItemRegistry().load();
         plugin.getRotateScheduleManager().load();
-
         Bukkit.getOnlinePlayers().forEach(p -> plugin.getPlayerShopManager().load(p.getUniqueId()));
     }
 
-    public Currency get(String id) {
-        return currencies.get(id.toLowerCase());
-    }
-
+    // Currency Management
     public void register(Currency currency) {
         if (currency.canLoad()) {
             currency.load();
@@ -51,7 +53,6 @@ public class CurrencyRegistry {
         } else {
             plugin.getLogger().warning("Skipped loading currency adapter: " + currency.getId());
         }
-
         currencies.put(currency.getId().toLowerCase(), currency);
     }
 
@@ -63,6 +64,11 @@ public class CurrencyRegistry {
         currencies.remove(id.toLowerCase());
     }
 
+    public Currency get(String id) {
+        return currencies.get(id.toLowerCase());
+    }
+
+    // Accessors
     public Map<String, Currency> getCurrencies() {
         return currencies;
     }
@@ -71,3 +77,4 @@ public class CurrencyRegistry {
         return isLoaded;
     }
 }
+

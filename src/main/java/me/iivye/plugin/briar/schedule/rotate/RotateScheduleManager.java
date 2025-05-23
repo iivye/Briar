@@ -94,3 +94,4 @@ public class RotateScheduleManager {
         Bukkit.getScheduler().runTaskLater(plugin, new Scheduling(schedules, mode, now, scheduleManager), 20L * TimeUnit.DAYS.toSeconds(1));
     }
 }
+

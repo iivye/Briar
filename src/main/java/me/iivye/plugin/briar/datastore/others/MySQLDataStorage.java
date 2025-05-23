@@ -10,19 +10,30 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MySQLDataStorage extends SQLDataStorage {
+
     public MySQLDataStorage(Briar plugin) {
-        super(buildConnectionProvider(plugin.getConfig().getString("datastore.mysql.host"), plugin.getConfig().getInt("datastore.mysql.port"), plugin.getConfig().getString("datastore.mysql.user"), plugin.getConfig().getString("datastore.mysql.password"), plugin.getConfig().getString("datastore.mysql.database")), "ON DUPLICATE KEY UPDATE");
+        super(
+                buildConnectionProvider(
+                        plugin.getConfig().getString("datastore.mysql.host"),
+                        plugin.getConfig().getInt("datastore.mysql.port"),
+                        plugin.getConfig().getString("datastore.mysql.user"),
+                        plugin.getConfig().getString("datastore.mysql.password"),
+                        plugin.getConfig().getString("datastore.mysql.database")
+                ),
+                "ON DUPLICATE KEY UPDATE"
+        );
     }
 
     private static MySQLConnectionProvider buildConnectionProvider(String host, int port, String user, String pass, String database) {
-        return new MySQLConnectionProvider(String.format("jdbc:mysql://%s:%s/%s", host, port, database), user, pass);
+        String jdbcUrl = String.format("jdbc:mysql://%s:%s/%s", host, port, database);
+        return new MySQLConnectionProvider(jdbcUrl, user, pass);
     }
 
     private static final class MySQLConnectionProvider implements SQLConnectionProvider {
         private final HikariDataSource hikari;
 
         private MySQLConnectionProvider(String jdbcURL, String user, String pass) {
-            final HikariConfig config = new HikariConfig();
+            HikariConfig config = new HikariConfig();
             config.setDriverClassName("com.mysql.jdbc.Driver");
             config.setJdbcUrl(jdbcURL);
             config.setUsername(user);
@@ -64,3 +75,4 @@ public class MySQLDataStorage extends SQLDataStorage {
         }
     }
 }
+

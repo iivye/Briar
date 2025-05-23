@@ -9,25 +9,29 @@ public class CurrencyEvent extends Event {
 
     private final CurrencyRegistry registry;
 
+    // Constructor
     public CurrencyEvent(CurrencyRegistry registry) {
         this.registry = registry;
     }
 
-    public static HandlerList getHandlerList() {
-        return HANDLER_LIST;
-    }
-
-    public void register(Currency currency) {
-        getRegistry().register(currency);
-    }
-
+    // Accessors
     public CurrencyRegistry getRegistry() {
         return registry;
     }
 
+    public void register(Currency currency) {
+        registry.register(currency);
+    }
+
+    // Event handling
     @NotNull
     @Override
     public HandlerList getHandlers() {
         return HANDLER_LIST;
     }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
+    }
 }
+

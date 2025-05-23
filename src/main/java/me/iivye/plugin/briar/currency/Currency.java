@@ -4,47 +4,36 @@ import java.util.UUID;
 
 public interface Currency {
     /**
-     * Gets the currency's unique ID that is used in the config.yml file.
-     *
-     * @return unique id for configuration uses
+     * @return unique ID for configuration use
      */
     String getId();
 
-    /**
-     * Runs any code if stuff is required to be loaded before other methods can be used.
-     */
+    /** Initialize the currency if needed */
     void load();
 
-    /**
-     * Checks if this currency has all requirements met and is able to be loaded.
-     *
-     * @return true if this currency is able to be loaded
-     */
+    /** @return true if the currency can be loaded */
     boolean canLoad();
 
     /**
-     * Runs code with external currency API to see if this player can afford the provided price.
-     *
-     * @param player the player's unique ID
-     * @param price  the decimal price
-     * @return true if this player can afford the price
+     * @param player player's unique ID
+     * @param price  amount to check
+     * @return true if the player can afford it
      */
     boolean canPlayerAfford(UUID player, double price);
 
     /**
-     * Takes the provided amount/price from the player's balance in this currency.
+     * Withdraws the specified amount from the player
      *
-     * @param player the player's unique ID
-     * @param amount the decimal price
+     * @param player player's unique ID
+     * @param amount amount to withdraw
      */
     void withdraw(UUID player, double amount);
 
     /**
-     * Returns a singular/plural name depending on the currency amount.
-     * Ex: [amount] dollar(s)
-     *
-     * @param amount the amount of this currency
-     * @return the formatted currency name
+     * @param amount currency amount
+     * @return formatted name based on the amount
      */
     String getName(double amount);
 }
+
+

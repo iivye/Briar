@@ -12,10 +12,12 @@ public class Vault implements Currency {
     private final Briar plugin;
     private Economy eco;
 
+    // Constructor
     public Vault(Briar plugin) {
         this.plugin = plugin;
     }
 
+    // Currency Interface Implementations
     @Override
     public String getId() {
         return "vault";
@@ -23,12 +25,16 @@ public class Vault implements Currency {
 
     @Override
     public void load() {
-        this.eco = Objects.requireNonNull(Bukkit.getServicesManager().getRegistration(Economy.class), "Failed to find a valid Vault currency adapter.").getProvider();
+        this.eco = Objects.requireNonNull(
+                Bukkit.getServicesManager().getRegistration(Economy.class),
+                "Failed to find a valid Vault currency adapter."
+        ).getProvider();
     }
 
     @Override
     public boolean canLoad() {
-        return Bukkit.getPluginManager().isPluginEnabled("Vault") && Bukkit.getServicesManager().getRegistration(Economy.class) != null;
+        return Bukkit.getPluginManager().isPluginEnabled("Vault")
+                && Bukkit.getServicesManager().getRegistration(Economy.class) != null;
     }
 
     @Override
@@ -43,6 +49,9 @@ public class Vault implements Currency {
 
     @Override
     public String getName(double amount) {
-        return amount == 1 ? plugin.getConfig().getString("default_currencies.vault.name.singular", "Dollar") : plugin.getConfig().getString("default_currencies.vault.name.plural", "Dollars");
+        return amount == 1
+                ? plugin.getConfig().getString("default_currencies.vault.name.singular", "Dollar")
+                : plugin.getConfig().getString("default_currencies.vault.name.plural", "Dollars");
     }
 }
+

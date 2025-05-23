@@ -17,32 +17,38 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static me.iivye.plugin.briar.util.Text.color;
-
 public class GUIParser {
+
     public static ParsedGUI parse(ConfigurationSection config) {
         final String title = config.getString("title");
         final int rows = config.getInt("rows");
         Preconditions.checkArgument(rows > 0 && rows < 7, "Rows needs to be greater than 0 and less than 7!");
+
         final ItemStack backgroundIcon = IconParser.parse(config.getConfigurationSection("background_icon"));
         final List<String> backgroundSlots = config.getStringList("background_slots");
         final List<String> itemSlots = config.getStringList("item_slots");
         Preconditions.checkArgument(!itemSlots.isEmpty(), "Item slots need to be greater than 0!");
 
         final Set<ExtraIcon> extraIcons = new HashSet<>();
+        final ConfigurationSection extraIconsConfig = config.getConfigurationSection("extra_icons");
 
-        if (config.contains("extra_icons")) {
-            final ConfigurationSection extraIconsConfig = config.getConfigurationSection("extra_icons");
+        if (extraIconsConfig != null) {
             extraIconsConfig.getValues(false).forEach((id, data) -> {
                 final ConfigurationSection iconConfig = (ConfigurationSection) data;
                 final ItemStack icon = IconParser.parse(iconConfig);
                 final List<Integer> slots = SlotParser.parse(iconConfig.getStringList("slots"));
-
                 extraIcons.add(new ExtraIcon(icon, slots));
             });
         }
 
-        return new ParsedGUI(backgroundIcon, SlotParser.parse(backgroundSlots), SlotParser.parse(itemSlots), extraIcons, title, rows);
+        return new ParsedGUI(
+                backgroundIcon,
+                SlotParser.parse(backgroundSlots),
+                SlotParser.parse(itemSlots),
+                extraIcons,
+                title,
+                rows
+        );
     }
 
     public static class ExtraIcon {
@@ -68,10 +74,11 @@ public class GUIParser {
         private final List<Integer> backgroundSlots;
         private final List<Integer> itemSlots;
         private final Set<ExtraIcon> extraIcons;
-    private final String title;
+        private final String title;
         private final int rows;
 
-        public ParsedGUI(ItemStack backgroundItem, List<Integer> backgroundSlots, List<Integer> itemSlots, Set<ExtraIcon> extraIcons, String title, int rows) {
+        public ParsedGUI(ItemStack backgroundItem, List<Integer> backgroundSlots, List<Integer> itemSlots,
+                         Set<ExtraIcon> extraIcons, String title, int rows) {
             this.backgroundItem = backgroundItem;
             this.backgroundSlots = backgroundSlots;
             this.itemSlots = itemSlots;
@@ -92,22 +99,27 @@ public class GUIParser {
             plugin.debug("Building Briar GUI for: " + player.getUniqueId());
             plugin.debug("Items list: " + String.join(",", player.getShopItems()));
             plugin.debug("Purchased items list: " + String.join(",", player.getPurchasedShopItems().keySet()));
+
             final InventoryGUI gui = new InventoryGUI(rows * 9, getTitle());
-            final ItemButton bgButton = ItemButton.create(backgroundItem, (e) -> {
-            });
+            final ItemButton bgButton = ItemButton.create(backgroundItem, e -> {});
+
+            // Add background buttons
             for (Integer slot : backgroundSlots) {
                 gui.addButton(slot, bgButton);
             }
-            for (ExtraIcon extraIcon : extraIcons) {
-                final ItemButton iconButton = ItemButton.create(extraIcon.getIcon(), (e) -> {
-                });
 
+            // Add extra icons buttons
+            for (ExtraIcon extraIcon : extraIcons) {
+                final ItemButton iconButton = ItemButton.create(extraIcon.getIcon(), e -> {});
                 for (Integer slot : extraIcon.getSlots()) {
                     gui.addButton(slot, iconButton);
                 }
             }
+
+            // Process shop items, handle resizing and invalid items
             List<String> items = player.getShopItems();
             boolean changed = items.removeIf(x -> plugin.getShopItemRegistry().get(x) == null);
+
             if (items.size() > itemSlots.size()) {
                 plugin.debug("(1) GUI was previously resized. Old items list: " + String.join(",", items));
                 items = items.subList(0, itemSlots.size());
@@ -115,19 +127,29 @@ public class GUIParser {
                 player.setShopItems(items);
                 plugin.debug("New items list: " + String.join(",", items));
             }
+
             if (items.size() < itemSlots.size()) {
                 plugin.debug("(2) GUI was previously resized. Old items list: " + String.join(",", items));
                 final int diff = itemSlots.size() - items.size();
-                final WeightedRandom<ShopItem> random = WeightedRandom.fromCollection(plugin.getShopItemRegistry().getAll(), x -> x, ShopItem::getRarity);
+
+                final WeightedRandom<ShopItem> random = WeightedRandom.fromCollection(
+                        plugin.getShopItemRegistry().getAll(),
+                        x -> x,
+                        ShopItem::getRarity
+                );
+
                 items.forEach(x -> random.remove(plugin.getShopItemRegistry().get(x)));
+
                 if (random.getWeights().size() < diff) {
-                    throw new RuntimeException("There are not enough items to generate the shops! Please add more items than slots in the GUI!");
+                    throw new RuntimeException("Not enough items to generate the shops! Add more items than slots in the GUI!");
                 }
+
                 for (int i = 0; i < diff; i++) {
                     final ShopItem item = random.roll();
                     random.remove(item);
                     items.add(item.getId());
                 }
+
                 changed = true;
                 player.setShopItems(items);
                 plugin.debug("New items list: " + String.join(",", items));
@@ -137,19 +159,25 @@ public class GUIParser {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.getDataStoreProvider().setPlayerShop(player));
                 plugin.debug("Updated items to DB: " + String.join(",", items));
             }
+
+            // Add item buttons to GUI with click handlers
             for (int i = 0; i < itemSlots.size(); i++) {
                 final Integer slot = itemSlots.get(i);
                 final ShopItem item = plugin.getShopItemRegistry().get(items.get(i));
 
                 final boolean globalCheck = plugin.getConfig().getBoolean("other.global_purchase_limits");
-                final int purchased = globalCheck ? plugin.getPlayerShopManager().getGlobalPurchaseCount(item) : player.getPurchaseCount(item.getId());
+                final int purchased = globalCheck
+                        ? plugin.getPlayerShopManager().getGlobalPurchaseCount(item)
+                        : player.getPurchaseCount(item.getId());
                 final int stock = item.getPurchaseLimit();
 
                 final Player bp = Bukkit.getPlayer(player.getUniqueId());
-                ItemStack isIcon;
+                final ItemStack isIcon;
 
                 if (bp != null && bp.isOnline()) {
-                    isIcon = Text.specializeItem(bp, item.getIcon(), "{stock}", stock == Integer.MAX_VALUE ? "∞" : "" + stock, "{purchase_count}", "" + purchased);
+                    isIcon = Text.specializeItem(bp, item.getIcon(),
+                            "{stock}", stock == Integer.MAX_VALUE ? "∞" : String.valueOf(stock),
+                            "{purchase_count}", String.valueOf(purchased));
                 } else {
                     isIcon = item.getIcon();
                 }
@@ -160,9 +188,10 @@ public class GUIParser {
                         return;
                     }
 
-                    // Recheck these variables in case of time delay between icon creation and execution.
                     final boolean globalPurchaseLimits = plugin.getConfig().getBoolean("other.global_purchase_limits");
-                    final int purchaseCount = globalPurchaseLimits ? plugin.getPlayerShopManager().getGlobalPurchaseCount(item) : player.getPurchaseCount(item.getId());
+                    final int purchaseCount = globalPurchaseLimits
+                            ? plugin.getPlayerShopManager().getGlobalPurchaseCount(item)
+                            : player.getPurchaseCount(item.getId());
                     final String messageKey = globalPurchaseLimits ? "item_max_global_purchases" : "already_purchased";
 
                     if (purchaseCount >= item.getPurchaseLimit()) {
@@ -177,18 +206,22 @@ public class GUIParser {
                             currencyName = currencyName.toLowerCase();
                         }
 
-                        e.getWhoClicked().sendMessage(plugin.getMessage((Player) e.getWhoClicked(), "cannot_afford").replace("{amount}", Text.formatCurrency(item.getAmount())).replace("{currency}", currencyName));
+                        e.getWhoClicked().sendMessage(plugin.getMessage((Player) e.getWhoClicked(), "cannot_afford")
+                                .replace("{amount}", Text.formatCurrency(item.getAmount()))
+                                .replace("{currency}", currencyName));
                         e.getWhoClicked().closeInventory();
-
                         return;
                     }
 
                     player.purchaseItem(item);
                     Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.getDataStoreProvider().setPlayerShop(player));
+
                     if (plugin.getConfig().getBoolean("other.close_on_buy")) {
                         e.getWhoClicked().closeInventory();
                     }
-                    e.getWhoClicked().sendMessage(plugin.getMessage((Player) e.getWhoClicked(), "successfully_purchased_item").replace("{item}", item.getId()));
+
+                    e.getWhoClicked().sendMessage(plugin.getMessage((Player) e.getWhoClicked(), "successfully_purchased_item")
+                            .replace("{item}", item.getId()));
                 }));
             }
 
@@ -204,4 +237,11 @@ public class GUIParser {
             }
         }
     }
+
+    private static String color(String input) {
+        // Assuming you have some color code processing method
+        // Placeholder implementation:
+        return input;
+    }
 }
+

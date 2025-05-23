@@ -45,20 +45,26 @@ public class ShopItem {
         return amount;
     }
 
-    public int getPurchaseLimit() {
-        return purchaseLimit;
-    }
-
     public double getRarity() {
         return rarity;
+    }
+
+    public int getPurchaseLimit() {
+        return purchaseLimit;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ShopItem)) return false;
         ShopItem shopItem = (ShopItem) o;
-        return Double.compare(shopItem.amount, amount) == 0 && Double.compare(shopItem.rarity, rarity) == 0 && purchaseLimit == shopItem.purchaseLimit && Objects.equals(id, shopItem.id) && Objects.equals(icon, shopItem.icon) && Objects.equals(commands, shopItem.commands) && Objects.equals(currency, shopItem.currency);
+        return Double.compare(shopItem.amount, amount) == 0 &&
+                Double.compare(shopItem.rarity, rarity) == 0 &&
+                purchaseLimit == shopItem.purchaseLimit &&
+                Objects.equals(id, shopItem.id) &&
+                Objects.equals(icon, shopItem.icon) &&
+                Objects.equals(commands, shopItem.commands) &&
+                Objects.equals(currency, shopItem.currency);
     }
 
     @Override
@@ -68,6 +74,15 @@ public class ShopItem {
 
     @Override
     public String toString() {
-        return "ShopItem{" + "id='" + id + '\'' + ", icon=" + icon + ", command='" + commands + '\'' + ", currency=" + currency + ", amount=" + amount + ", rarity=" + rarity + ", isMultiplePurchase=" + purchaseLimit + '}';
+        return "ShopItem{" +
+                "id='" + id + '\'' +
+                ", icon=" + icon +
+                ", commands=" + commands +
+                ", currency=" + currency +
+                ", amount=" + amount +
+                ", rarity=" + rarity +
+                ", purchaseLimit=" + purchaseLimit +
+                '}';
     }
 }
+

@@ -11,10 +11,12 @@ public class PlayerPoints implements Currency {
     private final Briar plugin;
     private PlayerPointsAPI eco;
 
+    // Constructor
     public PlayerPoints(Briar plugin) {
         this.plugin = plugin;
     }
 
+    // Currency Interface Implementations
     @Override
     public String getId() {
         return "playerpoints";
@@ -42,6 +44,9 @@ public class PlayerPoints implements Currency {
 
     @Override
     public String getName(double amount) {
-        return amount == 1 ? plugin.getConfig().getString("default_currencies.playerpoints.name.singular", "Token") : plugin.getConfig().getString("default_currencies.playerpoints.name.plural", "Tokens");
+        return amount == 1
+                ? plugin.getConfig().getString("default_currencies.playerpoints.name.singular", "Token")
+                : plugin.getConfig().getString("default_currencies.playerpoints.name.plural", "Tokens");
     }
 }
+
