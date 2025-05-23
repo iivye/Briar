@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.iivye.plugin.briar'
-version = '1.1'
+version = '1.0'
 
 java {
     toolchain {
@@ -29,7 +29,6 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.21.5-R0.1-SNAPSHOT'
     compileOnly 'com.mojang:authlib:1.5.21'
 
-    // Force safe versions of transitive dependencies
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'commons-io:commons-io:2.15.1'
     implementation 'com.google.protobuf:protobuf-java:4.31.0'
@@ -48,7 +47,6 @@ dependencies {
     compileOnly 'com.mysql:mysql-connector-j:9.1.0'
     compileOnly 'org.xerial:sqlite-jdbc:3.46.0.1'
 
-    // Fully exclude vulnerable log4j
     configurations.all {
         exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
     }
