@@ -48,6 +48,11 @@ public class Vault implements Currency {
     }
 
     @Override
+    public void deposit(UUID player, double amount) {
+
+    }
+
+    @Override
     public String getName(double amount) {
         return amount == 1
                 ? plugin.getConfig().getString("default_currencies.vault.name.singular", "Dollar")

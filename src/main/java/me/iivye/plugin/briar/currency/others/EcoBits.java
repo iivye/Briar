@@ -44,6 +44,11 @@ public class EcoBits implements Currency {
     }
 
     @Override
+    public void deposit(UUID player, double amount) {
+
+    }
+
+    @Override
     public String getName(double amount) {
         return amount + " " + adapter.getName();
     }
