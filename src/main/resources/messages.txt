@@ -3,9 +3,9 @@ already_purchased: &cThis item cannot be purchased again!
 successfully_purchased_item: &aSuccessfully purchased {item}.
 shop_not_open: &cThe shop is not open right now! It will open at: %briar_open%
 rotate_announcement: &6The market has rotated!
-reload_success: &aSuccessfully reloaded Briar's configuration.
+reload_success: &aSuccessfully reloaded BriarMarket's configuration.
 force_rotated: &aForcefully rotated {player}'s shop.
-shop_loading: &cSorry, but the shop is still loading! Please wait and try again later.
+shop_loading: &cThe shop is still loading! Please wait and try again later.
 no_permission: &cYou do not have permission to use this command!
 item_max_global_purchases: &cThis item is out of stock!
 force_rotated_all: &aForcefully rotated all shops!

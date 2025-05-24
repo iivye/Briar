@@ -17,9 +17,4 @@ bmadmin {
     hook forceglobalrotate
     help Forcefully rotates all shops.
   }
-  debug {
-    hook debug
-    help Provides debug information to give to support.
-    user console
-  }
 }

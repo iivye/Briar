@@ -6,7 +6,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import redempt.redlib.misc.FormatUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -21,11 +20,11 @@ public class Text {
     }
 
     public static String color(String str) {
-        return FormatUtils.color(str, true);
+        return Utils.format(str);
     }
 
     public static List<String> color(List<String> list) {
-        return list.stream().map(Text::color).collect(Collectors.toList());
+        return list.stream().map(Utils::format).collect(Collectors.toList());
     }
 
     public static String format(OfflinePlayer context, String string) {
@@ -56,11 +55,11 @@ public class Text {
         if (meta == null) return item;
 
         if (meta.hasDisplayName()) {
-            meta.setDisplayName(formatPlaceholders(player, meta.getDisplayName(), replacements));
+            meta.setDisplayName(Utils.format(formatPlaceholders(player, meta.getDisplayName(), replacements)));
         }
         if (meta.hasLore()) {
             meta.setLore(meta.getLore().stream()
-                    .map(line -> formatPlaceholders(player, line, replacements))
+                    .map(line -> Utils.format(formatPlaceholders(player, line, replacements)))
                     .collect(Collectors.toList()));
         }
         item.setItemMeta(meta);

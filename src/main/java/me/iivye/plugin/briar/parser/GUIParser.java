@@ -5,6 +5,7 @@ import me.iivye.plugin.briar.Briar;
 import me.iivye.plugin.briar.shop.item.ShopItem;
 import me.iivye.plugin.briar.shop.player.PlayerShop;
 import me.iivye.plugin.briar.util.Text;
+import me.iivye.plugin.briar.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ import java.util.Set;
 public class GUIParser {
 
     public static ParsedGUI parse(ConfigurationSection config) {
-        final String title = config.getString("title");
+        final String title = Utils.format(config.getString("title"));
         final int rows = config.getInt("rows");
         Preconditions.checkArgument(rows > 0 && rows < 7, "Rows needs to be greater than 0 and less than 7!");
 

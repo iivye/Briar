@@ -1,7 +1,6 @@
 package me.iivye.plugin.briar;
 
 import me.iivye.plugin.briar.shop.player.PlayerShop;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import redempt.redlib.commandmanager.CommandHook;
@@ -84,26 +83,5 @@ public class CMDHooks {
 
         plugin.getPlayerShopManager().rotateShops();
         sender.sendMessage(plugin.getMessage(null, "force_rotated_all"));
-    }
-
-    @CommandHook("debug")
-    public void onDebug(CommandSender sender) {
-        if (!sender.hasPermission("briar.admin")) {
-            sender.sendMessage(plugin.getMessage(null, "no_permission"));
-            return;
-        }
-
-        plugin.getUpdateChecker().check();
-
-        sender.sendMessage("Briar's Debug Information:");
-        sender.sendMessage("- Server Version: " + Bukkit.getVersion());
-        sender.sendMessage("- Server Type: " + Bukkit.getBukkitVersion());
-        sender.sendMessage("- Plugin Version: " + plugin.getDescription().getVersion());
-        sender.sendMessage("- Latest Version: " + plugin.getUpdateChecker().getLastCheckedVersion());
-        sender.sendMessage("- DataStore Type: " + plugin.getDataStoreProvider().getClass().getSimpleName());
-        sender.sendMessage("- Buyer: %%__USER__%%");
-        sender.sendMessage("- Resource ID: %%__RESOURCE__%%");
-        sender.sendMessage("- MC-Market?: %%__BUILTBYBIT__%%");
-        sender.sendMessage("{!} Please include your configuration with this when asking for help. You MAY OMIT credentials. Please COPY AND PASTE configuration into discord server. {!}");
     }
 }

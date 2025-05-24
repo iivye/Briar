@@ -185,11 +185,11 @@ items:
 
 # ✦ Refund Button
 refund_icon:
-  material: PAPER
-  name: "&aRefund Last Item"
+  material: redstone_comparator
+  name: "&4&lRefund Last Item"
   lore:
     - "&7Click to refund your last purchased item."
-  slot: 8
+  slot: 26
 
 # ✦ Market Access Schedule
 access_schedule:
@@ -218,24 +218,22 @@ gui:
     name: " "
     lore:
       - ""
-    material: GRAY_STAINED_GLASS_PANE
-  title: "&6BriarMarket"
+    material: BLACK_STAINED_GLASS_PANE
+  title: "BriarMarket"
   rows: 3
   background_slots:
-    - "0-8"
-    - "9"
-    - "17"
-    - "18-26"
+    - "0-10"
+    - "16-26"
   item_slots:
-    - "10-16"
+    - "11-15"
   extra_icons:
     info:
-      name: "&bInformation"
+      name: "&b&lInformation"
       lore:
-        - "&7This shop is unique for all players."
+        - "&7This shop is unique for every single player on the server!"
       material: PAPER
       slots:
-        - "22"
+        - "18"
 
 # ✦ Timezone Override
 timezone: ""
