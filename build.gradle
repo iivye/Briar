@@ -70,7 +70,7 @@ shadowJar {
     minimize {
         exclude(dependency("com.github.cryptomorin:XSeries:.*"))
     }
-    archiveBaseName.set("Briar")
+    archiveBaseName.set("BriarMarket")
     archiveClassifier.set("")
 
     relocate 'com.cryptomorin.xseries', 'me.iivye.plugin.briarmarket.libs.xseries'
