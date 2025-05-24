@@ -1,6 +1,6 @@
 name: BriarMarket
 version: '${version}'
-main: me.iivye.plugin.briar.Briar
+main: me.iivye.plugin.briarmarket.Briar
 api-version: 1.13
 softdepend:
   - Vault

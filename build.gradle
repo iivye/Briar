@@ -4,7 +4,7 @@ plugins {
     id "com.gradleup.shadow" version "8.3.6"
 }
 
-group = 'me.iivye.plugin.briar'
+group = 'me.iivye.plugin.briarmarket'
 version = '1.0'
 
 java {
@@ -73,10 +73,10 @@ shadowJar {
     archiveBaseName.set("Briar")
     archiveClassifier.set("")
 
-    relocate 'com.cryptomorin.xseries', 'me.iivye.plugin.briar.libs.xseries'
-    relocate 'redempt', 'me.iivye.plugin.briar.libs.redempt'
-    relocate 'org.bstats', 'me.iivye.plugin.briar.libs.bstats'
-    relocate 'com.zaxxer.hikari', 'me.iivye.plugin.briar.libs.hikaricp'
+    relocate 'com.cryptomorin.xseries', 'me.iivye.plugin.briarmarket.libs.xseries'
+    relocate 'redempt', 'me.iivye.plugin.briarmarket.libs.redempt'
+    relocate 'org.bstats', 'me.iivye.plugin.briarmarket.libs.bstats'
+    relocate 'com.zaxxer.hikari', 'me.iivye.plugin.briarmarket.libs.hikaricp'
 }
 
 
