@@ -13,7 +13,6 @@
 - 🍃 **Plant-Themed UI** – Designed with nature and fantasy aesthetics in mind. Rest assured, the UI can be customized to your imagination.
 - 🔧 **Fully Configurable** – YAML-based setup for full control over items, costs, and chances.
 - 📆 **Per-Player Shops** – Give every player a unique shop, or keep it shared across all.
-- 🛠️ **Developer Friendly** – API and custom adapter support (in progress).
 
 ---
 
@@ -24,7 +23,6 @@
 - At least one supported currency plugin:
   - [Vault](https://www.spigotmc.org/resources/vault.34315/)
   - [PlayerPoints](https://www.spigotmc.org/resources/playerpoints.80745/)
-  - [EcoBits](https://www.spigotmc.org/resources/ecobits-%E2%AD%95-create-custom-currencies-%E2%9C%85-improve-your-monetization-%E2%9C%A8-supports-shops-mysql.109967/)
 
 ---
 
@@ -34,7 +32,7 @@
 2. Ensure you have at least one supported currency plugin installed and enabled.
 3. Start your server to generate the default config.
 4. Open and edit `plugins/BriarMarket/config.yml` to customize your shop.
-5. Use `/briaradmin reload` to apply changes without restarting.
+5. Use `/bmadmin reload` to apply changes without restarting.
 
 ---
 
@@ -58,10 +56,10 @@ items:
 
 | Command         | Description                                   |
 | --------------- |-----------------------------------------------|
-| `/briar`        | Opens the shop GUI                            |
-| `/briaradmin reload` | Reloads the configuration file                |
-| `/briaradmin rotate <player>` | Rotates the provided player's market.         |
-| `/briaradmin gobalrotate` | Rotates the global shops.                     |
+| `/briarmarket`        | Opens the shop GUI                            |
+| `/bmadmin reload` | Reloads the configuration file                |
+| `/bmadmin rotate <player>` | Rotates the provided player's market.         |
+| `/bmadmin gobalrotate` | Rotates the global shops.                     |
 
 ---
 
@@ -76,7 +74,7 @@ items:
 ## 🐛 Troubleshooting
 
 > **Skipped loading ShopItem...**
-> This means Briar couldn’t find a working currency adapter. Ensure your specified `currency:` (e.g., `VAULT`) is in the loaded priority list and that the plugin is installed and active.
+> This means BriarMarket couldn’t find a working currency adapter. Ensure your specified `currency:` (e.g., `VAULT`) is in the loaded priority list and that the plugin is installed and active.
 
 > **No shop items are showing up!**
 > Double-check:
