@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+// Code inspired by byteful https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket
+
 public class MongoDataStorage implements DataStorage {
     private final MongoClient client;
     private final MongoDatabase db;

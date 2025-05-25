@@ -9,6 +9,8 @@ import me.iivye.plugin.briarmarket.datastore.SQLDataStorage;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+// Code inspired by byteful https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket
+
 public class MySQLDataStorage extends SQLDataStorage {
 
     public MySQLDataStorage(Briar plugin) {

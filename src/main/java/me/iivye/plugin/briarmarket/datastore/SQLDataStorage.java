@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+// Code inspired by byteful https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket
+
 public abstract class SQLDataStorage implements DataStorage {
 
     protected final SQLConnectionProvider connectionProvider;

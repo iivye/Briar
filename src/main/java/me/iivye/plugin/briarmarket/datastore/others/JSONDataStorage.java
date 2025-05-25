@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
+// Code inspired by byteful https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket
+
 public class JSONDataStorage implements DataStorage {
     private final JsonObject data;
     private final File file;

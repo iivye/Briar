@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+// Code inspired by byteful (https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket)
+
 public interface DataStorage extends Closeable {
     Gson GSON = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
 

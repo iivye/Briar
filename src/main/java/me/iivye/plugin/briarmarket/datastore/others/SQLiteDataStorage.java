@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+// Code inspired by byteful https://github.com/byteful/NightMarket/tree/master/src/main/java/me/byteful/plugin/nightmarket
+
 public class SQLiteDataStorage extends SQLDataStorage {
 
     public SQLiteDataStorage(IsolatedClass loader, Briar plugin) {
