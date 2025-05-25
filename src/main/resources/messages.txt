@@ -4,11 +4,11 @@ successfully_purchased_item: &aSuccessfully purchased {item}.
 shop_not_open: &cThe shop is not open right now! It will open at: %briar_open%
 rotate_announcement: &6The market has rotated!
 reload_success: &aSuccessfully reloaded BriarMarket's configuration.
-force_rotated: &aForcefully rotated {player}'s shop.
+rotated: &aSuccessfully rotated {player}'s shop.
 shop_loading: &cThe shop is still loading! Please wait and try again later.
 no_permission: &cYou do not have permission to use this command!
 item_max_global_purchases: &cThis item is out of stock!
-force_rotated_all: &aForcefully rotated all shops!
+rotated_all: &aSuccessfully rotated global shops!
 no_purchased_items_to_refund: "&cYou have no purchased items to refund."
 error_refund_item_not_found: "&cError: Refund item not found."
 successfully_refunded_item: "&aYou have successfully refunded &e{item}&a."

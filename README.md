@@ -56,20 +56,19 @@ items:
 ```
 ## ⌨️ Commands
 
-| Command         | Description                    |
-| --------------- | ------------------------------ |
-| `/briar`        | Opens the shop GUI             |
-| `/briaradmin reload` | Reloads the configuration file |
-| `/briaradmin forcerotate <player>` | Forcefully rotate provided player's market shop. |
-| `/briaradmin forcegobalrotate` | Forcefully rotates all shops. |
-| `/briaradmin debug` | Provides debug information for support (WIP). |
+| Command         | Description                                   |
+| --------------- |-----------------------------------------------|
+| `/briar`        | Opens the shop GUI                            |
+| `/briaradmin reload` | Reloads the configuration file                |
+| `/briaradmin rotate <player>` | Rotates the provided player's market.         |
+| `/briaradmin gobalrotate` | Rotates the global shops.                     |
 
 ---
 
 ## 🧪 Configuration Tips
 
 * `chance`: Determines the likelihood (%) that an item will appear in a shop rotation.
-* `currency_priority`: Briar uses the first valid, loaded currency plugin from this list.
+* `currency_priority`: BriarMarket uses the first valid, loaded currency plugin from this list.
 * `per_player`: If set to `true`, each player will see a unique shop lineup.
 
 ---
@@ -88,18 +87,9 @@ items:
 
 ---
 
-## 🔮 Future Plans
-
-* Custom item actions (e.g., commands, potion effects)
-* GUI-based configuration
-* Integration with MMOItems, ItemsAdder, Oraxen
-* Developer API & custom currency adapters
-
----
-
 ## 🌼 Credits
 
-* Plugin by **iivye**
+* Plugin made by **iivye**
 * Inspired by fantasy, immersive economies, and the charm of nature-based design.
 * Thank you to the Minecraft plugin dev community for years of shared knowledge <3.
 

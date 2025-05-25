@@ -1,20 +1,20 @@
 briarmarket {
     hook open
-    help Opens the Briar GUI.
+    help Opens the BriarMarket GUI.
     user player
 }
 
 bmadmin {
   reload {
     hook reload
-    help Reloads the Briar configuration.
+    help Reloads BriarMarket's configuration.
   }
-  forcerotate player:player {
-    hook forcerotate
-    help Forcefully rotate provided player's market shop.
+  rotate player:player {
+    hook rotate
+    help Rotate the provided player's market.
   }
-  forceglobalrotate {
-    hook forceglobalrotate
-    help Forcefully rotates all shops.
+  globalrotate {
+    hook globalrotate
+    help Rotates the global market.
   }
 }

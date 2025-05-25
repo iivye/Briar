@@ -63,25 +63,25 @@ public class CMDHooks {
         sender.sendMessage(plugin.getMessage(null, "reload_success"));
     }
 
-    @CommandHook("forcerotate")
-    public void onForceRotate(CommandSender sender, Player player) {
+    @CommandHook("rotate")
+    public void onRotate(CommandSender sender, Player player) {
         if (!sender.hasPermission("briarmarket.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
             return;
         }
 
         plugin.getPlayerShopManager().get(player.getUniqueId()).rotate(plugin.getShopItemRegistry());
-        sender.sendMessage(plugin.getMessage(null, "force_rotated").replace("{player}", player.getName()));
+        sender.sendMessage(plugin.getMessage(null, "rotated").replace("{player}", player.getName()));
     }
 
-    @CommandHook("forceglobalrotate")
-    public void onForceGlobalRotate(CommandSender sender) {
+    @CommandHook("globalrotate")
+    public void onGlobalRotate(CommandSender sender) {
         if (!sender.hasPermission("briarmarket.admin")) {
             sender.sendMessage(plugin.getMessage(null, "no_permission"));
             return;
         }
 
         plugin.getPlayerShopManager().rotateShops();
-        sender.sendMessage(plugin.getMessage(null, "force_rotated_all"));
+        sender.sendMessage(plugin.getMessage(null, "rotated_all"));
     }
 }
